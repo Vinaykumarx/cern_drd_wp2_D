@@ -1,0 +1,29 @@
+# Core RAG & Vector Store
+lancedb
+pyarrow
+sentence-transformers
+numpy
+
+# VLM & Image/PDF Processing
+torch
+torchvision
+accelerate
+transformers
+qwen-vl-utils
+PyMuPDF
+pdfplumber
+opencv-python-headless
+Pillow
+
+# Web App & API Clients
+streamlit
+python-dotenv
+pandas
+groq
+requests
+fastapi
+uvicorn
+httpx
+openai
+pydantic
+pymupdf4llm==0.0.5
