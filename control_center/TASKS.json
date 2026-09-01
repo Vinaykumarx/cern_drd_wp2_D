@@ -63,5 +63,40 @@
     "id": "TASK-0013",
     "title": "Physics-Aware Prompts",
     "status": "pending"
+  },
+  {
+    "id": "THESIS-CHAPTER1-001",
+    "title": "Complete thesis Chapter 1 pages 8–15",
+    "status": "completed"
+  },
+  {
+    "id": "THESIS-CHAPTER1-DENSITY-001",
+    "title": "Deepen Chapter 1 page content without pagination overflow",
+    "status": "completed"
+  },
+  {
+    "id": "THESIS-CHAPTER2-001",
+    "title": "Complete thesis Chapter 2 pages 16–27",
+    "status": "completed"
+  },
+  {
+    "id": "THESIS-CHAPTER3-PAGE28-001",
+    "title": "Complete thesis Chapter 3 page 28 requirements and acceptance criteria",
+    "status": "completed"
+  },
+  {
+    "id": "THESIS-CONTINUITY-001",
+    "title": "Create reusable thesis continuity protocol, evidence register, and project skill",
+    "status": "completed"
+  },
+  {
+    "id": "THESIS-CHAPTER3-PAGE29-001",
+    "title": "Complete thesis Chapter 3 page 29 use cases and researcher workflow",
+    "status": "completed"
+  },
+  {
+    "id": "THESIS-MEMORY-SYNC-001",
+    "title": "Synchronize thesis workflow, continuity skill, Obsidian handoff, and Git repository",
+    "status": "completed"
   }
 ]

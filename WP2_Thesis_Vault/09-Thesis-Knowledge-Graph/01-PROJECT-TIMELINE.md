@@ -20,7 +20,10 @@ Evidence: [[../07-Chat-History|Chat history]], [[../08-Source-Code|source snapsh
 
 Work exposed Docker import-path problems, Qdrant API incompatibilities, network
 timeouts, slow model downloads, and local resource constraints. The project then
-shifted toward LanceDB for a more controllable local-first vector store.
+shifted toward LanceDB for a more controllable self-hosted/local vector-store
+direction. Here, “local-first” means that inference and data can run on owned
+hardware rather than depending on a third-party cloud LLM/API; it does not mean
+that the final application is restricted to one laptop or one user.
 
 ## Late 2025 to early 2026 — Multimodal features
 
@@ -57,12 +60,20 @@ control-center files, runtime safety, and a canonical pipeline. Important fixes
 included LanceDB count desynchronization, blocking asynchronous behavior, and
 large graph-memory usage. Docling became the intended primary extraction path.
 
-## 2026 — Compute transition
+## 2026 — Hardware failure and CERN compute transition
 
-The history records the need for stronger compute, an RTX 5090 incident, discussion
-of CERN GPU resources, and compute request `RQF3798846` for the `drd8-llm` context.
-This marks the transition from Mac-constrained experimentation toward GPU-assisted
-VLM, OCR, batch extraction, and large-document processing.
+After the initial owned-GPU/server setup was disrupted by a GPU failure, the work
+entered a compute-access phase. The history records communication with CERN Open
+Lab/ML Flow and related CERN infrastructure, including Kubeflow, together with
+compute requests and access discussions such as `RQF3798846` for the `drd8-llm`
+context. The purpose was to restore access to GPU-assisted VLM, OCR, batch
+extraction, and large-document processing rather than to move the project to a
+cloud LLM/API architecture.
+
+The later production plan was prepared for stronger server/GPU execution. Some
+components reached implementation or demonstration, while others remained in
+migration or were blocked by compute availability; the thesis must distinguish
+planned production design from experimentally validated behaviour.
 
 ## 2026-07-03 — CERN WP2 Materials Database LLM presentation
 

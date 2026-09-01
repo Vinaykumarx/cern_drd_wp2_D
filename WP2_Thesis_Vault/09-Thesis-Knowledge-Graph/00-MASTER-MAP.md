@@ -6,6 +6,7 @@ evidence sources; these notes connect them for thesis preparation.
 
 ## Navigation
 
+- [[00-AI-AGENT-START-HERE|AI agent start here]] — current progress, workflow, next section, and gap policy
 - [[01-PROJECT-TIMELINE]] — chronological project history
 - [[02-ARCHITECTURE-EVOLUTION]] — technical evolution from Mac prototype to production direction
 - [[03-THESIS-EVIDENCE-MAP]] — where each thesis chapter gets its evidence

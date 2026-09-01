@@ -180,7 +180,11 @@ After every task completion:
   - Update last_updated field
   - Update task status in tasks object
   - Update bug status in bugs object if applicable
-  - Increment index_version if structure changes
+- Increment index_version if structure changes
+
+7. Thesis continuity reference
+
+For any EPITA/CERN DRD8 WP2 thesis task, read `knowledge_system/THESIS_CONTINUITY.md` and the project skill at `knowledge_system/skills/wp2-thesis-continuity/SKILL.md`. These files preserve verified framing, source-to-chapter assignments, visual assignments, non-duplication rules, and unresolved gaps for future orchestrators.
 
 The session_index.json is the SINGLE source of truth for session history.
 Without it, an agent cannot reconstruct the project timeline.

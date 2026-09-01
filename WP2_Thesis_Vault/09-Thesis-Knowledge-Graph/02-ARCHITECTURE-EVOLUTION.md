@@ -7,7 +7,8 @@ PDF → PyMuPDF/text extraction → LayoutLMv3 + BLIP2
     → custom chunks → SentenceTransformers → Qdrant Cloud → Streamlit
 ```
 
-Constraint: low-memory, CPU-first experimentation on the Mac.
+Constraint: low-memory, lightweight experimentation on the Mac; the Mac was a
+development environment, not the final deployment target.
 
 ## Stage B — Local multimodal restructuring
 
@@ -16,7 +17,7 @@ PDF → text/table/image extraction → captions and filtering
     → text/figure/table chunks → embeddings → LanceDB → Streamlit previews
 ```
 
-Decision drivers: Qdrant API/network friction, local reproducibility, explicit
+Decision drivers: Qdrant API/network friction, self-hosted/local reproducibility, explicit
 schemas, and easier control of multimodal metadata.
 
 ## Stage C — Modular production direction
@@ -41,7 +42,8 @@ PDF → Docling primary parser
     → embeddings/retrieval/reranking → grounded answers
 ```
 
-This is the target direction, not a claim that every component is complete.
+This is the target production direction, not a claim that every component is
+complete or experimentally validated.
 
 ## Key transformations
 
@@ -54,10 +56,13 @@ This is the target direction, not a claim that every component is complete.
 | Extraction | PyMuPDF/LayoutLMv3/BLIP2 | Docling + OCR/VLM + legacy fallbacks |
 | Scope | Single PDF | Multi-document, document IDs, filtering |
 | Answering | Basic RAG | Research, verification, synthesis, citations |
-| Hardware | Mac/CPU/lightweight models | CERN/GPU-oriented batch and VLM processing |
+| Hardware | Mac/lightweight models for rapid prototype work | Self-managed server/GPU-oriented batch and VLM processing |
 
 ## Thesis interpretation
 
 The important contribution is not one library choice. It is the controlled
 evolution of the system in response to hardware, scientific-document complexity,
-reproducibility, scalability, and citation requirements.
+reproducibility, scalability, and citation requirements. “Local-first” in this
+map refers to ownership and control of the execution environment: a local GPU or
+server can host the models and data, while the completed platform can still be
+served remotely to users over the network.

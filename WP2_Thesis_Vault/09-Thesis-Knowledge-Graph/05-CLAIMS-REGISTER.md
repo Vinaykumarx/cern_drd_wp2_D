@@ -19,8 +19,19 @@
 - “Extracted every piece of information” should be avoided. The system attempts
   comprehensive extraction, but visual coverage, table normalization, and page
   grouping remain incomplete.
-- GPU/CERN compute access is documented as a transition and request context;
-  exact completed workloads need confirmation.
+- The project used an owned/local GPU-server interpretation of “local-first”:
+  models and data were intended to run under project control without requiring a
+  third-party cloud LLM/API, while the final server could be accessed remotely by
+  users. The original GPU failure and subsequent CERN Open Lab/ML Flow/Kubeflow
+  compute-access phase should be described as part of the project timeline.
+- The production-grade architecture and migration plan were prepared for stronger
+  compute, but not every planned component was fully tested. The thesis must label
+  each capability as implemented, demonstrated, migrated, planned, blocked, or
+  benchmarked rather than treating the production design as proof of completion.
+- Exact completed workloads, infrastructure dates, and the precise GPU model/name
+  still need confirmation from records. Earlier project evidence refers to an RTX
+  5090; the newly supplied wording says “1580,” so this identifier must be checked
+  before publication.
 
 ## Do not expose
 
