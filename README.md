@@ -110,4 +110,3 @@ The UI thus eliminates any need to manually edit files: just paste the link or
 upload a PDF and use the buttons.  You can still script things by editing
 `examples/multi_doc_example.py` if you want batch processing, but the
 interactive sidebar covers the common case.
-
