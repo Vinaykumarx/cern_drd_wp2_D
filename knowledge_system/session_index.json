@@ -1,6 +1,6 @@
 {
   "index_version": 5,
-  "last_updated": "2026-09-01_14-08",
+  "last_updated": "2026-09-01_14-11",
   "phases": {
     "A": {
       "name": "Audit & Discovery",
@@ -212,6 +212,12 @@
       "files_modified_count": 4,
       "bugs_fixed": ["THESIS-LOGO-ASPECT-RATIO"],
       "summary": "Replaced the CERN cover image with the user-supplied 700x394 logo, normalized all three cover logos without distortion, rendered the manuscript successfully at 69 pages, and prepared the update for private GitHub."
+    },
+    "2026-09-01_14-11": {
+      "task_id": "THESIS-ACADEMIC-SUPERVISOR-001",
+      "files_modified_count": 4,
+      "bugs_fixed": [],
+      "summary": "Added Alaa Bakhti as the EPITA academic supervisor on the thesis cover, removed the final cover placeholder, verified the 69-page render, and synchronized the update to private GitHub."
     }
   },
   "session_order": [
@@ -239,6 +245,7 @@
     "2026-09-01_12-16",
     "2026-09-01_12-38",
     "2026-09-01_12-46",
-    "2026-09-01_14-08"
+    "2026-09-01_14-08",
+    "2026-09-01_14-11"
   ]
 }
