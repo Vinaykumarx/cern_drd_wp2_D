@@ -1,0 +1,33 @@
+{
+  "session": "2026-06-15_11-07",
+  "task_id": "Phase G — Repository Organization",
+  "files_modified": [
+    "archive/extraction/ (9 files moved)",
+    "archive/scripts/ (dir)",
+    "logs/ (6 files moved)",
+    "scripts/ (5 files moved in)",
+    "core/chunker.py (DEPRECATED header)",
+    "core/embedder.py (DEPRECATED header)",
+    "extraction/ (removed 9 files + backup)",
+    "data/ (removed 4 duplicate PDFs)",
+    "frontend/postcss.config.js (removed)",
+    "lancedb_test/ (removed)",
+    "metadata.json (removed)",
+    "page_dump.html (removed)",
+    "control_center/PROJECT_STATE.md",
+    "control_center/CHANGELOG.md",
+    "control_center/BUGS.md",
+    "knowledge_system/latest_state.md",
+    "knowledge_system/session_index.json"
+  ],
+  "reasoning_summary": "Phase G — Repository Organization. Created archive/ with extraction/ and scripts/ subdirs. Moved 9 deprecated extraction scripts to archive/extraction/. Moved 5 inactive utility scripts (scratch_chunker, test_cern_chat, test_ui_headless, test_ui_visually, repair_swarm) to scripts/. Created logs/ and moved 6 runtime logs. Deleted 9 safe items: extract_with_docid.py.backup, page_dump.html, empty metadata.json, 4 duplicate CERN-89-12 PDFs (kept only CERN-89-12.pdf), frontend/postcss.config.js (postcss.config.mjs kept), lancedb_test/. Marked core/chunker.py and core/embedder.py as DEPRECATED. Architecture validation now reports 0 violations (previously 9 HIGH from deprecated scripts which were archived). Updated PROJECT_STATE.md, CHANGELOG.md, latest_state.md, session_index.json.",
+  "bugs_introduced": [],
+  "bugs_fixed": [],
+  "system_state_before": "9 deprecated scripts in extraction/. 5 utility scripts cluttering root. 6 log files at root. 4 duplicate PDFs. 6 orphaned files/dirs.",
+  "system_state_after": "Clean root: only src files. Deprecated scripts archived. Logs centralized. Duplicates removed. 0 architecture violations. No canonical pipeline files modified.",
+  "next_steps": [
+    "TASK-0004: Replace pymupdf4llm with Docling",
+    "TASK-0005: ColPali Visual Retrieval",
+    "TASK-0007: Hybrid Chunking with Nomic"
+  ]
+}

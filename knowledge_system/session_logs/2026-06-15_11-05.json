@@ -1,0 +1,32 @@
+{
+  "session": "2026-06-15_11-05",
+  "task_id": "Phase E — System Lock",
+  "files_modified": [
+    "core/architecture_validator.py (NEW)",
+    "core/bootstrap.py (NEW)",
+    "control_center/SYSTEM_LOCK.md (NEW)",
+    "backend/main.py",
+    "project_cli.py",
+    "master_control.py",
+    "project_dashboard.py",
+    "reingest_all.py",
+    "manual_ingest.py",
+    "ingest_specific_doc.py",
+    "project_agent.py",
+    "project_manager.py",
+    "run_implementation_plan.py",
+    "validate_startup.py",
+    "health_check.py",
+    "knowledge_system/session_index.json"
+  ],
+  "reasoning_summary": "Phase E — System Lock: Runtime architecture enforcement layer.\n\n(1) core/architecture_validator.py: AST-based scanner detecting forbidden imports (lancedb), lancedb.connect() calls, rag.store.table.* patterns, deprecated extraction scripts, and missing bootstrap imports. Exempts validator meta-files and scripts/ directory from scanning. 9 HIGH violations found (deprecated scripts) — no CRITICAL violations.\n\n(2) core/bootstrap.py: Orchestrates startup. Runs project_memory_loader (session index, tasks, bugs, state) + architecture_validator. Provides startup_enforce() (refuses on CRITICAL violations), require_bootstrap() (scripts must call before execution), get_runtime_context().\n\n(3) backend/main.py: Replaced system_validator.run_startup_validation() with bootstrap.startup_enforce() in FastAPI lifespan. Server now refuses startup on CRITICAL violations.\n\n(4) 11 executable scripts: Added 'from core.bootstrap import require_bootstrap; require_bootstrap()' at top of each.\n\n(5) reingest_all.py: Fixed real violation — rag.store.table.delete() → rag.store.delete_by_doc_id().\n\n(6) control_center/SYSTEM_LOCK.md: Documents canonical ingestion/retrieval paths, forbidden patterns, allowed modules, verification command.",
+  "bugs_introduced": [],
+  "bugs_fixed": [],
+  "system_state_before": "No runtime architecture enforcement. system_validator wired but non-blocking. Scripts ran without bootstrap context.",
+  "system_state_after": "ArchitectureValidator blocks startup on CRITICAL violations. All 11 executable scripts enforce bootstrap. SYSTEM_LOCK.md documents all rules. 0 CRITICAL violations in codebase.",
+  "next_steps": [
+    "TASK-0004: Replace pymupdf4llm with Docling",
+    "TASK-0005: ColPali Visual Retrieval",
+    "TASK-0007: Hybrid Chunking with Nomic"
+  ]
+}

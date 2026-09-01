@@ -1,0 +1,23 @@
+{
+  "session": "2026-06-15_11-03",
+  "task_id": "TASK-0001 → TASK-0002 → TASK-0003 (all completed)",
+  "files_modified": [
+    "core/vector_store_lance.py",
+    "core/rag_pipeline.py",
+    "backend/main.py",
+    "control_center/TASKS.json",
+    "control_center/BUGS.md",
+    "control_center/PROJECT_STATE.md",
+    "knowledge_system/latest_state.md"
+  ],
+  "reasoning_summary": "Phase C complete — all 3 critical bugs fixed.\n\nTASK-0001 (BUG-001): Fixed LanceDB count desync. verify_document_vectors() replaced ANN search (default limit=10) with count_rows(filter=...). search() error recovery stripped destructive reset()+re-ingest pattern (was silently dropping prior vectors). get_all_vectors() replaced zero-vector ANN pagination with full table scan.\n\nTASK-0002 (BUG-002): Fixed async event loop blocking. Wrapped 10+ sync calls in FastAPI handlers with asyncio.to_thread(), including rag.search(), call_local_summary(), store.get_all_vectors(), store.get_all_doc_ids(), client.chat.completions.create(), cds.search(). Converted /api/ingest_document from sync inline pipeline to BackgroundTasks. Replaced sync httpx.get() and httpx.head() with async http_client.\n\nTASK-0003 (BUG-003): Fixed knowledge graph memory/browser freeze. Removed 768-dim vector column from get_all_vectors() return (was loaded for graph but unused). Hard-capped graph at 300 nodes with early break. Reduced default limit from 50 to 30. Added truncated flag to pagination response.",
+  "bugs_introduced": [],
+  "bugs_fixed": ["BUG-001 — LanceDB count desync", "BUG-002 — Async event loop blocking", "BUG-003 — Knowledge graph browser freeze"],
+  "system_state_before": "3 critical bugs open. Sync calls blocking event loop. Knowledge graph loading vectors + unbounded nodes.",
+  "system_state_after": "All 3 critical bugs fixed. All sync calls wrapped in asyncio.to_thread. Knowledge graph capped at 300 nodes. Pipeline sanity test passes.",
+  "next_steps": [
+    "TASK-0004: Replace pymupdf4llm with Docling",
+    "TASK-0005: ColPali Visual Retrieval",
+    "TASK-0007: Hybrid Chunking with Nomic"
+  ]
+}

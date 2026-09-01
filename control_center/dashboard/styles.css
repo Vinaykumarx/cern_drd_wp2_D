@@ -1,0 +1,260 @@
+/* ------------------------------------------------------------------ */
+/* CERN Multimodal RAG — Control Center Dashboard                     */
+/* Dark glass-morphism theme                                          */
+/* ------------------------------------------------------------------ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #0a0a0f;
+  color: #e0e0e0;
+  min-height: 100vh;
+}
+
+/* ------------------------------------------------------------------ */
+/* Header                                                             */
+/* ------------------------------------------------------------------ */
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.header-left h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: #6b7280;
+  margin-left: 8px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-ok {
+  background: rgba(16,185,129,0.15);
+  color: #10b981;
+  border: 1px solid rgba(16,185,129,0.3);
+}
+
+.badge-fail {
+  background: rgba(239,68,68,0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239,68,68,0.3);
+}
+
+.version {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+/* ------------------------------------------------------------------ */
+/* Grid                                                                */
+/* ------------------------------------------------------------------ */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 16px 24px;
+  max-width: 1400px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Panels                                                             */
+/* ------------------------------------------------------------------ */
+
+.panel {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+}
+
+.panel-header {
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #9ca3af;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+}
+
+.panel-body {
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ------------------------------------------------------------------ */
+/* Stats rows                                                          */
+/* ------------------------------------------------------------------ */
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.stat-row:last-child {
+  border-bottom: none;
+}
+
+.stat-value {
+  font-weight: 600;
+  color: #fff;
+}
+
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #6b7280;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+/* ------------------------------------------------------------------ */
+/* Violations                                                          */
+/* ------------------------------------------------------------------ */
+
+.violation-list {
+  margin-top: 8px;
+}
+
+.violation-item {
+  font-size: 11px;
+  padding: 2px 0;
+  font-family: monospace;
+}
+
+/* ------------------------------------------------------------------ */
+/* Task rows                                                           */
+/* ------------------------------------------------------------------ */
+
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  font-size: 12px;
+}
+
+.task-id {
+  font-family: monospace;
+  color: #6b7280;
+  min-width: 70px;
+}
+
+.task-title {
+  flex: 1;
+  color: #d1d5db;
+}
+
+.task-status {
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------------ */
+/* Bug rows                                                            */
+/* ------------------------------------------------------------------ */
+
+.bug-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  font-size: 11px;
+}
+
+.bug-id {
+  font-family: monospace;
+  font-weight: 600;
+  min-width: 56px;
+}
+
+.bug-desc {
+  flex: 1;
+  color: #d1d5db;
+}
+
+.bug-severity,
+.bug-status {
+  font-weight: 600;
+  font-size: 10px;
+  min-width: 50px;
+  text-align: right;
+}
+
+/* ------------------------------------------------------------------ */
+/* Colors                                                              */
+/* ------------------------------------------------------------------ */
+
+.text-green { color: #10b981; }
+.text-red { color: #ef4444; }
+.text-yellow { color: #eab308; }
+.text-muted { color: #6b7280; }
+
+.loading { color: #6b7280; font-style: italic; }
+.error { color: #ef4444; }
+
+/* ------------------------------------------------------------------ */
+/* Footer                                                              */
+/* ------------------------------------------------------------------ */
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 24px;
+  font-size: 11px;
+  color: #4b5563;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+/* ------------------------------------------------------------------ */
+/* Responsive                                                          */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

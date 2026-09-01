@@ -1,0 +1,67 @@
+[
+  {
+    "id": "TASK-0001",
+    "title": "LanceDB Sync Fix",
+    "status": "completed"
+  },
+  {
+    "id": "TASK-0002",
+    "title": "Async/Await Mismatch",
+    "status": "completed"
+  },
+  {
+    "id": "TASK-0003",
+    "title": "Knowledge Graph Memory Leak",
+    "status": "completed"
+  },
+  {
+    "id": "TASK-0004",
+    "title": "Replace pymupdf4llm with Docling",
+    "status": "in_progress"
+  },
+  {
+    "id": "TASK-0005",
+    "title": "ColPali Visual Retrieval",
+    "status": "pending"
+  },
+  {
+    "id": "TASK-0006",
+    "title": "Deprecate Streamlit, Unify Next.js",
+    "status": "completed"
+  },
+  {
+    "id": "TASK-0007",
+    "title": "Hybrid Chunking with Nomic",
+    "status": "pending"
+  },
+  {
+    "id": "TASK-0008",
+    "title": "Graph Pagination & Query Opt",
+    "status": "pending"
+  },
+  {
+    "id": "TASK-0009",
+    "title": "Docker Container Optimization",
+    "status": "pending"
+  },
+  {
+    "id": "TASK-0010",
+    "title": "E2E Testing Suite",
+    "status": "pending"
+  },
+  {
+    "id": "TASK-0011",
+    "title": "Performance Benchmarking",
+    "status": "pending"
+  },
+  {
+    "id": "TASK-0012",
+    "title": "Architecture Documentation",
+    "status": "pending"
+  },
+  {
+    "id": "TASK-0013",
+    "title": "Physics-Aware Prompts",
+    "status": "pending"
+  }
+]

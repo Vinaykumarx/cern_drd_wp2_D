@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control Center</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <h1>&#9672; Control Center</h1>
+    <span class="subtitle">CERN Multimodal RAG</span>
+  </div>
+  <div class="header-right">
+    <span class="badge" id="status-badge">Loading...</span>
+    <span class="version" id="version-badge"></span>
+  </div>
+</header>
+
+<main class="grid" id="dashboard-grid">
+  <!-- Panels rendered by app.js -->
+</main>
+
+<footer>
+  <span>Last updated: <span id="last-updated">—</span></span>
+  <span>Dashboard v1.0.0 &mdash; Read Only</span>
+</footer>
+
+<script src="/app.js"></script>
+</body>
+</html>

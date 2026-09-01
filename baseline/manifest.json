@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-06-16T10:03:53.710022+00:00",
+  "total_docs": 3,
+  "docs": [
+    {
+      "doc_id": "2960657",
+      "filename": "2960657.pdf",
+      "pdf_size_bytes": 28704,
+      "status": "failed",
+      "elapsed_seconds": 0.139,
+      "chunk_count": 0,
+      "error": "extraction_error: No /Root object! - Is this really a PDF?",
+      "processed_at": "2026-06-16T10:01:08.386596+00:00"
+    },
+    {
+      "doc_id": "CERN-2001-006",
+      "filename": "CERN-2001-006.pdf",
+      "pdf_size_bytes": 16146,
+      "status": "failed",
+      "elapsed_seconds": 0.019,
+      "chunk_count": 0,
+      "error": "extraction_error: No /Root object! - Is this really a PDF?",
+      "processed_at": "2026-06-16T10:01:08.406147+00:00"
+    },
+    {
+      "doc_id": "CERN-89-12",
+      "filename": "CERN-89-12.pdf",
+      "pdf_size_bytes": 3861193,
+      "status": "success",
+      "elapsed_seconds": 165.303,
+      "chunk_count": 433,
+      "error": null,
+      "processed_at": "2026-06-16T10:03:53.708827+00:00"
+    }
+  ]
+}

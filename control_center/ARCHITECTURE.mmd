@@ -1,0 +1,53 @@
+graph TD
+    subgraph Frontend
+        NEXT[Next.js 15 :3000]
+        ST[Streamlit]
+    end
+
+    subgraph Backend
+        API[FastAPI :8000]
+        SM[SessionManager]
+        DM[DocumentManager]
+        CDS[CERN CDS Search]
+        HM[HealthMonitor]
+    end
+
+    subgraph Pipeline
+        PDF[PDF Input]
+        EXT[Extraction<br/>pymupdf4llm + pdfplumber]
+        CAP[Image Captioning<br/>BLIP + Qwen2-VL]
+        CHUNK[SemanticChunker]
+        EMB[BGE Embedding<br/>768-dim]
+        VS[LanceDB Vector Store]
+        RR[Reranker<br/>Cross-Encoder]
+        LLM[Ollama<br/>Gemma 4 / Llama 3.x]
+    end
+
+    subgraph Control
+        PA[project_agent.py]
+        PC[project_cli.py]
+        PD[project_dashboard.py :8888]
+        RT[real_time_tracker.py]
+    end
+
+    NEXT --> API
+    ST --> API
+    API --> SM
+    API --> DM
+    API --> CDS
+    API --> HM
+
+    PDF --> EXT
+    EXT --> CAP
+    CAP --> CHUNK
+    CHUNK --> EMB
+    EMB --> VS
+    VS --> RR
+    RR --> LLM
+
+    API --> Pipeline
+
+    PA --> API
+    PC --> PA
+    PD --> PA
+    RT --> API

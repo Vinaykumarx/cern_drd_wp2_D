@@ -1,0 +1,14 @@
+graph LR
+    A[User Query] --> B[RAG System]
+    B --> C1[Local DB Search]
+    B --> C2[CERN Document Server API]
+    C1 --> D[Merge Results]
+    C2 --> D
+    D --> E[Cross-Encoder Reranking]
+    E --> F[Cited Answer]
+    style A fill:#ffe6cc,stroke:#ff9900,stroke-width:2px
+    style C1 fill:#ffffcc,stroke:#ffff00,stroke-width:2px
+    style C2 fill:#ffffcc,stroke:#ffff00,stroke-width:2px
+    style D fill:#cce6ff,stroke:#0099ff,stroke-width:2px
+    style E fill:#ffcccc,stroke:#ff0066,stroke-width:2px
+    style F fill:#99ff99,stroke:#00cc00,stroke-width:2px

@@ -1,0 +1,209 @@
+{
+  "index_version": 5,
+  "last_updated": "2026-09-01_07-33",
+  "phases": {
+    "A": {
+      "name": "Audit & Discovery",
+      "status": "completed",
+      "tasks": ["TASK-0006"]
+    },
+    "B": {
+      "name": "Runtime Safety Layer",
+      "status": "completed",
+      "tasks": ["TASK-0006"]
+    },
+    "C": {
+      "name": "Critical Bug Fixes",
+      "status": "completed",
+      "tasks": ["TASK-0001", "TASK-0002", "TASK-0003"]
+    },
+    "D": {
+      "name": "Global Memory Layer",
+      "status": "completed",
+      "tasks": []
+    },
+    "E": {
+      "name": "System Lock — Architecture Enforcement",
+      "status": "completed",
+      "tasks": []
+    },
+    "F": {
+      "name": "Control Center Dashboard",
+      "status": "completed",
+      "tasks": []
+    },
+    "G": {
+      "name": "Repository Organization",
+      "status": "completed",
+      "tasks": []
+    }
+  },
+  "tasks": {
+    "TASK-0001": { "title": "LanceDB Sync Fix", "status": "completed", "bug": "BUG-001", "session": "2026-06-15_11-02" },
+    "TASK-0002": { "title": "Async/Await Mismatch", "status": "completed", "bug": "BUG-002", "session": "2026-06-15_11-03" },
+    "TASK-0003": { "title": "Knowledge Graph Memory Leak", "status": "completed", "bug": "BUG-003", "session": "2026-06-15_11-03" },
+    "TASK-0004": { "title": "Replace pymupdf4llm with Docling", "status": "in_progress", "bug": null, "session": "2026-06-15_16-27" },
+    "TASK-0005": { "title": "ColPali Visual Retrieval", "status": "pending", "bug": null, "session": null },
+    "TASK-0006": { "title": "Deprecate Streamlit, Unify Next.js", "status": "completed", "bug": null, "session": "2026-06-15_11-00" },
+    "TASK-0007": { "title": "Hybrid Chunking with Nomic", "status": "pending", "bug": null, "session": null },
+    "TASK-0008": { "title": "Graph Pagination & Query Opt", "status": "pending", "bug": null, "session": null },
+    "TASK-0009": { "title": "Docker Container Optimization", "status": "pending", "bug": null, "session": null },
+    "TASK-0010": { "title": "E2E Testing Suite", "status": "pending", "bug": null, "session": null },
+    "TASK-0011": { "title": "Performance Benchmarking", "status": "pending", "bug": null, "session": null },
+    "TASK-0012": { "title": "Architecture Documentation", "status": "pending", "bug": null, "session": null },
+    "TASK-0013": { "title": "Physics-Aware Prompts", "status": "pending", "bug": null, "session": null }
+  },
+  "bugs": {
+    "BUG-001": { "title": "LanceDB vector count desync", "severity": "Critical", "status": "Fixed", "fix_session": "2026-06-15_11-02" },
+    "BUG-002": { "title": "SemanticChunker and vector searches block FastAPI async event loop", "severity": "Critical", "status": "Fixed", "fix_session": "2026-06-15_11-03" },
+    "BUG-003": { "title": "Knowledge graph endpoint loads all vectors — browser freezes as DB grows", "severity": "Critical", "status": "Fixed", "fix_session": "2026-06-15_11-03" },
+    "BUG-004": { "title": "BLIP hardcoded to process max 3 images per PDF", "severity": "High", "status": "Open", "fix_session": null },
+    "BUG-005": { "title": "Chunk metadata uses hardcoded topics/naive keywords instead of dynamic generation", "severity": "High", "status": "Open", "fix_session": null },
+    "BUG-006": { "title": "Redundant asset storage (file system + LanceDB) — risk of desync on delete", "severity": "Medium", "status": "Open", "fix_session": null },
+    "BUG-007": { "title": "Dual frontend (Streamlit + Next.js) — features missing between them", "severity": "Medium", "status": "Open", "fix_session": null }
+  },
+  "sessions": {
+    "2026-06-15_11-00": {
+      "task_id": "TASK-0006",
+      "files_modified_count": 10,
+      "bugs_fixed": [],
+      "summary": "Streamlit refactored to API-only client. Renamed to streamlit_app_DEPRECATED.py."
+    },
+    "2026-06-15_11-01": {
+      "task_id": "TASK-0006 → TASK-0001",
+      "files_modified_count": 13,
+      "bugs_fixed": [],
+      "summary": "Phase B completion. Wired system_validator into FastAPI startup. Deprecated 9 standalone extraction scripts."
+    },
+    "2026-06-15_11-02": {
+      "task_id": "TASK-0001 → TASK-0002",
+      "files_modified_count": 6,
+      "bugs_fixed": ["BUG-001"],
+      "summary": "Fixed LanceDB count desync. verify_document_vectors() uses count_rows(filter=...). Removed destructive reset()+re-ingest."
+    },
+    "2026-06-15_11-03": {
+      "task_id": "TASK-0001 → TASK-0002 → TASK-0003",
+      "files_modified_count": 7,
+      "bugs_fixed": ["BUG-001", "BUG-002", "BUG-003"],
+      "summary": "Phase C complete. All 3 critical bugs fixed. async/await wrappers, knowledge graph capped at 300 nodes."
+    },
+    "2026-06-15_11-04": {
+      "task_id": "Phase D — Global Memory Layer",
+      "files_modified_count": 3,
+      "bugs_fixed": [],
+      "summary": "Created session_index.json, project_memory_loader.py, updated AGENTS.md with Session Index Update Rule."
+    },
+    "2026-06-15_11-05": {
+      "task_id": "Phase E — System Lock",
+      "files_modified_count": 17,
+      "bugs_fixed": [],
+      "summary": "Created architecture_validator.py (runtime forbidden-pattern enforcement), bootstrap.py (orchestrates context + validation). Integrated into FastAPI startup (refuses on CRITICAL violation). Added bootstrap import to 11 executable scripts. Fixed reingest_all.py real violation. Created SYSTEM_LOCK.md documentation."
+    },
+    "2026-06-15_11-06": {
+      "task_id": "Phase F — Control Center Dashboard",
+      "files_modified_count": 8,
+      "bugs_fixed": [],
+      "summary": "Created control_center/dashboard/ with server.py (FastAPI port 8899), index.html, app.js, styles.css, dashboard_config.json (configurable pipeline flow). Created MASTER_PLAN.md (roadmap), DECISIONS.md (ADR records). 12 API endpoints. 8 dashboard panels. Read-only. No CRITICAL violations."
+    },
+    "2026-06-15_11-07": {
+      "task_id": "Phase G — Repository Organization",
+      "files_modified_count": 20,
+      "bugs_fixed": [],
+      "summary": "Created archive/ with archive/extraction/ and archive/scripts/. Moved 9 deprecated extraction scripts to archive/. Moved 5 inactive scripts to scripts/. Created logs/ — moved 6 runtime logs. Deleted 9 safe items (backup, page_dump.html, empty metadata.json, 4 duplicate PDFs, postcss.config.js, lancedb_test/). Marked core/chunker.py and core/embedder.py as DEPRECATED. Architecture validation: 0 violations."
+    },
+    "2026-06-15_16-27": {
+      "task_id": "TASK-0004",
+      "files_modified_count": 7,
+      "bugs_fixed": [],
+      "summary": "TASK-0004 extraction audit. Read extract_with_docid.py, docling_parser.py, rag_pipeline.py. Mapped pymupdf4llm usage at lines 266-302, Docling integration at lines 202-263, downstream consumers (rag_pipeline.py ingest_from_doc_id_output/build_chunks_from_metadata). Identified metadata.json schema requirements for pages/tables/figures. Updated state files to reflect in-progress status."
+    },
+    "2026-08-31_22-35": {
+      "task_id": "VAULT-AUDIT-001",
+      "files_modified_count": 3,
+      "bugs_fixed": [],
+      "summary": "Audited the WP2 thesis archive and local Obsidian vault copies, mapped project notes, source snapshots, presentations, PDFs, architecture media, chat exports, and project history, reconciled them with current control_center state, identified stale duplicates and mixed DMOS material, and created an EPITA-compliant thesis index draft."
+    },
+    "2026-09-01_02-38": {
+      "task_id": "FILE-AUDIT-001",
+      "files_modified_count": 2,
+      "bugs_fixed": [],
+      "summary": "Inspected the exact Downloads ZIP file. Confirmed it is a ChatGPT export containing 510 conversations, chat.html, 13 JSON files, and 601 binary attachments with mostly WAV audio plus images and documents. Original archive was not modified."
+    },
+    "2026-09-01_02-41": {
+      "task_id": "FILE-AUDIT-002",
+      "files_modified_count": 2,
+      "bugs_fixed": [],
+      "summary": "Reconstructed the CERN Multimodal RAG history from the exported ChatGPT conversations, thesis archive, project-tracking notes, and current repository state, distinguishing early Mac prototype work, LanceDB migration, multimodal experiments, production hardening, GPU transition, and Docling/ColPali roadmap."
+    },
+    "2026-09-01_02-55": {
+      "task_id": "VAULT-ORGANIZATION-001",
+      "files_modified_count": 10,
+      "bugs_fixed": [],
+      "summary": "Added a non-destructive Obsidian thesis knowledge graph with linked timeline, architecture evolution, chapter evidence map, gaps/questions, claims register, and Mermaid graph instructions. Existing vault content was preserved."
+    },
+    "2026-09-01_03-01": {
+      "task_id": "VAULT-MERGE-001",
+      "files_modified_count": 7,
+      "bugs_fixed": [],
+      "summary": "Merged the complete nested WP2 archive into the outer Obsidian-configured vault, verified identical source snapshots, corrected stale paths, and removed the redundant nested active folder after creating a verified compressed backup."
+    },
+    "2026-09-01_03-12": {
+      "task_id": "THESIS-GAPS-UPDATE-001",
+      "files_modified_count": 7,
+      "bugs_fixed": [],
+      "summary": "Recorded internship dates, verified official DRD8 WP2 context and CERN presentation evidence, added a provisional team map and recommended thesis title, and preserved uncertainty for roles requiring contractual confirmation."
+    },
+    "2026-09-01_03-25": {
+      "task_id": "THESIS-LAYOUT-001",
+      "files_modified_count": 6,
+      "bugs_fixed": [],
+      "summary": "Created an EPITA-aligned page-controlled draft thesis layout with a 69-page main report, separate annex and abstract budgets, page-by-page content mapping, and explicit placeholders for missing evidence."
+    },
+    "2026-09-01_05-22": {
+      "task_id": "THESIS-DOCX-001",
+      "files_modified_count": 6,
+      "bugs_fixed": [],
+      "summary": "Created and visually verified a 69-page editable Word thesis skeleton aligned with EPITA requirements, including draft project content, tables, and explicit fill-in placeholders."
+    },
+    "2026-09-01_05-35": {
+      "task_id": "THESIS-MANUSCRIPT-001",
+      "files_modified_count": 6,
+      "bugs_fixed": [],
+      "summary": "Created and visually verified a formal 69-page thesis manuscript populated from vault evidence, with architecture/interface visuals, tables, and completion fields only for unsupported personal or measured facts."
+    },
+    "2026-09-01_05-38": {
+      "task_id": "THESIS-MANUSCRIPT-HOUSEKEEPING-001",
+      "files_modified_count": 6,
+      "bugs_fixed": [],
+      "summary": "Renamed the active thesis document folder to 10-Thesis-Documents and preserved the earlier skeleton under a superseded filename."
+    },
+    "2026-09-01_07-33": {
+      "task_id": "THESIS-MANUSCRIPT-RICHENING-001",
+      "files_modified_count": 3,
+      "bugs_fixed": ["THESIS-DOCX-SAVE-PATH", "THESIS-FIGURE-OVERFLOW"],
+      "summary": "Rebuilt the formal EPITA thesis manuscript at the canonical 10-Thesis-Documents path, expanded evidence-based narrative content, embedded 22 distinct project visuals, constrained figure dimensions to prevent page overflow, and verified a clean 69-page render."
+    }
+  },
+  "session_order": [
+    "2026-06-15_11-00",
+    "2026-06-15_11-01",
+    "2026-06-15_11-02",
+    "2026-06-15_11-03",
+    "2026-06-15_11-04",
+    "2026-06-15_11-05",
+    "2026-06-15_11-06",
+    "2026-06-15_11-07",
+    "2026-06-15_16-27",
+    "2026-08-31_22-35",
+    "2026-09-01_02-38",
+    "2026-09-01_02-41",
+    "2026-09-01_02-55",
+    "2026-09-01_03-01",
+    "2026-09-01_03-12",
+    "2026-09-01_03-25",
+    "2026-09-01_05-22",
+    "2026-09-01_05-35",
+    "2026-09-01_05-38",
+    "2026-09-01_07-33"
+  ]
+}

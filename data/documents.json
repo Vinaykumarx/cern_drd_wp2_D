@@ -1,0 +1,73 @@
+{
+  "cern_205520_cern_89_12": {
+    "type": "pdf",
+    "url": "https://cds.cern.ch/record/205520/files/CERN-89-12.pdf",
+    "filename": "CERN-89-12.pdf",
+    "path": "data/CERN-89-12.pdf",
+    "doc_id": "cern_205520_cern_89_12",
+    "status": "registered"
+  },
+  "2960657": {
+    "type": "pdf",
+    "filename": "2960657.pdf",
+    "path": "/home/drd8/Vinay/projects/cern-multimodel-rag-lancedb-migration/data/2960657.pdf",
+    "doc_id": "2960657",
+    "status": "processing"
+  },
+  "CERN_89_12": {
+    "type": "pdf",
+    "filename": "CERN-89-12.pdf",
+    "path": "data/CERN-89-12.pdf",
+    "doc_id": "CERN_89_12",
+    "status": "indexed"
+  },
+  "poster2": {
+    "type": "pdf",
+    "filename": "poster2.pdf",
+    "path": "data/poster2.pdf",
+    "doc_id": "poster2",
+    "status": "registered"
+  },
+  "9004018": {
+    "type": "pdf",
+    "filename": "9004018.pdf",
+    "path": "data/9004018.pdf",
+    "doc_id": "9004018",
+    "status": "registered"
+  },
+  "cern_205520": {
+    "type": "pdf",
+    "filename": "cern_205520.pdf",
+    "path": "data/cern_205520.pdf",
+    "doc_id": "cern_205520",
+    "status": "registered"
+  },
+  "cern_89_12": {
+    "type": "pdf",
+    "filename": "cern_89_12.pdf",
+    "path": "/home/drd8/Vinay/projects/cern-multimodel-rag-lancedb-migration/data/cern_89_12.pdf",
+    "doc_id": "cern_89_12",
+    "status": "indexed"
+  },
+  "CERN-2001-006": {
+    "type": "pdf",
+    "filename": "CERN-2001-006.pdf",
+    "path": "data/CERN-2001-006.pdf",
+    "doc_id": "CERN-2001-006",
+    "status": "indexed"
+  },
+  "test_hybrid": {
+    "type": "pdf",
+    "filename": "test_hybrid.pdf",
+    "path": "data/test_hybrid.pdf",
+    "doc_id": "test_hybrid",
+    "status": "registered"
+  },
+  "2605.02848": {
+    "type": "pdf",
+    "filename": "2605.02848.pdf",
+    "path": "data/2605.02848.pdf",
+    "doc_id": "2605.02848",
+    "status": "registered"
+  }
+}

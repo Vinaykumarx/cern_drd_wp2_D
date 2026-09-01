@@ -1,0 +1,29 @@
+{
+  "session": "2026-06-15_11-01",
+  "task_id": "TASK-0006 (completion) → TASK-0001 (start)",
+  "files_modified": [
+    "backend/main.py",
+    "extraction/extract_text.py",
+    "extraction/extract_images.py",
+    "extraction/extract_tables.py",
+    "extraction/extract_graphs.py",
+    "extraction/caption_images.py",
+    "extraction/build_metadata.py",
+    "extraction/pipeline.py",
+    "extraction/extract_groq_vision.py",
+    "extraction/hybrid_extractor.py",
+    "control_center/TASKS.json",
+    "control_center/PROJECT_STATE.md",
+    "knowledge_system/latest_state.md"
+  ],
+  "reasoning_summary": "Phase B completion: (1) Wired system_validator.run_startup_validation() into FastAPI lifespan startup in backend/main.py — added import and async call via asyncio.to_thread. (2) Added # DEPRECATED banner to all 9 standalone extraction scripts. (3) Updated all state files — TASK-0006 marked completed, active task switched to TASK-0001.",
+  "bugs_introduced": [],
+  "bugs_fixed": [],
+  "system_state_before": "Phase B runtime safety layers created but not wired. Standalone scripts undeprecated.",
+  "system_state_after": "SystemValidator wired into FastAPI startup. All 9 standalone extraction scripts marked DEPRECATED. TASK-0006 completed.",
+  "next_steps": [
+    "Fix LanceDB vector count desync (TASK-0001 / BUG-001)",
+    "Fix async/await mismatch (TASK-0002 / BUG-002)",
+    "Fix knowledge graph memory leak (TASK-0003 / BUG-003)"
+  ]
+}

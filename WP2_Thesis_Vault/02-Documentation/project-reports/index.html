@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw — Complete System Report</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --orange: #d29922;
+    --red: #f85149;
+    --purple: #bc8cff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    display: flex;
+  }
+  nav.sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 280px; height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 0;
+    z-index: 100;
+  }
+  nav.sidebar h2 {
+    padding: 0 20px 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+  nav.sidebar a {
+    display: block;
+    padding: 6px 20px;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+  }
+  nav.sidebar a:hover, nav.sidebar a.active {
+    color: var(--text);
+    background: var(--surface2);
+    border-left-color: var(--accent);
+  }
+  nav.sidebar .section-group {
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+  nav.sidebar .section-label {
+    padding: 4px 20px 2px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text2);
+    opacity: 0.6;
+  }
+  main {
+    margin-left: 280px;
+    flex: 1;
+    max-width: 960px;
+    padding: 40px 48px 80px;
+  }
+  h1 { font-size: 28px; font-weight: 700; margin: 0 0 8px; }
+  h2 { font-size: 22px; font-weight: 600; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 18px; font-weight: 600; margin: 28px 0 12px; }
+  h4 { font-size: 15px; font-weight: 600; margin: 20px 0 8px; color: var(--text2); }
+  p { margin: 0 0 12px; }
+  .subtitle { color: var(--text2); font-size: 14px; margin-bottom: 32px; }
+  pre {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 12px 0;
+  }
+  code { font-family: 'JetBrains Mono', monospace; font-size: 13px; background: var(--surface2); padding: 2px 6px; border-radius: 4px; }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 4px;
+  }
+  .tag-green { background: rgba(63,185,80,0.15); color: var(--green); }
+  .tag-orange { background: rgba(210,153,34,0.15); color: var(--orange); }
+  .tag-red { background: rgba(248,81,73,0.15); color: var(--red); }
+  .tag-gray { background: rgba(139,148,158,0.15); color: var(--text2); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 20px;
+    font-size: 13px;
+  }
+  th, td {
+    padding: 8px 12px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+  th { background: var(--surface2); font-weight: 600; }
+  tr:hover { background: var(--surface); }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 16px 0;
+  }
+  .card-warn {
+    border-left: 4px solid var(--orange);
+    background: rgba(210,153,34,0.08);
+  }
+  .card-danger {
+    border-left: 4px solid var(--red);
+    background: rgba(248,81,73,0.08);
+  }
+  .card-info {
+    border-left: 4px solid var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-card .num { font-size: 28px; font-weight: 700; color: var(--accent); }
+  .stat-card .label { font-size: 12px; color: var(--text2); margin-top: 4px; }
+  ul, ol { margin: 8px 0 16px; padding-left: 24px; }
+  li { margin: 4px 0; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+  .section-nav {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+  }
+  .section-nav a {
+    background: var(--surface2);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text2);
+    text-decoration: none;
+    border: 1px solid var(--border);
+  }
+  .section-nav a:hover { color: var(--text); border-color: var(--accent); }
+  @media (max-width: 768px) {
+    nav.sidebar { display: none; }
+    main { margin-left: 0; padding: 24px 16px; }
+  }
+  .flow-diagram {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-x: auto;
+    white-space: pre;
+    margin: 16px 0;
+  }
+  .checklist li { list-style: none; }
+  .checklist li::before { content: "☐ "; }
+  .checklist li.done { color: var(--green); }
+  .checklist li.done::before { content: "☑ "; }
+  .checklist li.blocked { color: var(--red); }
+  .blocker-badge { background: rgba(248,81,73,0.15); color: var(--red); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <h2>OpenClaw System Report</h2>
+  <div class="section-group">
+    <div class="section-label">Overview</div>
+    <a href="#s1">1. Project Vision</a>
+    <a href="#s2">2. Current Status</a>
+    <a href="#s3">3. Architecture</a>
+  </div>
+  <div class="section-group">
+    <div class="section-label">Capabilities</div>
+    <a href="#s4">4. Assistant Capabilities</a>
+    <a href="#s5">5. Development Environment</a>
+    <a href="#s6">6. AI Stack</a>
+    <a href="#s7">7. Automation Platform</a>
+  </div>
+  <div class="section-group">
+    <div class="section-label">Operations</div>
+    <a href="#s8">8. Remote Development</a>
+    <a href="#s9">9. Security</a>
+    <a href="#s10">10. CERN DRD8 WP4</a>
+  </div>
+  <div class="section-group">
+    <div class="section-label">Reference</div>
+    <a href="#s11">11. Timeline</a>
+    <a href="#s12">12. Software Inventory</a>
+    <a href="#s13">13. Command History</a>
+    <a href="#s14">14. Risks</a>
+    <a href="#s15">15. Roadmap</a>
+    <a href="#s16">16. Executive Summary</a>
+    <a href="#s17">17. Handover Notes</a>
+  </div>
+</nav>
+
+<main>
+
+<h1>OpenClaw Personal AI OS</h1>
+<p class="subtitle">Complete System Report &amp; Handover Document<br>Generated: 2026-07-01 | Host: PCCA2063 | Windows 10 Pro</p>
+
+<div class="stat-grid">
+  <div class="stat-card"><div class="num">20</div><div class="label">Git Commits</div></div>
+  <div class="stat-card"><div class="num">37</div><div class="label">CAD Solids Parsed</div></div>
+  <div class="stat-card"><div class="num">71</div><div class="label">PLM Fields Extracted</div></div>
+  <div class="stat-card"><div class="num">27</div><div class="label">Materials in DB</div></div>
+  <div class="stat-card"><div class="num">30+</div><div class="label">Tools Documented</div></div>
+  <div class="stat-card"><div class="num">4</div><div class="label">Active Agents</div></div>
+</div>
+
+<div class="section-nav">
+  <a href="#s1">Vision</a>
+  <a href="#s3">Architecture</a>
+  <a href="#s6">AI Stack</a>
+  <a href="#s10">CERN WP4</a>
+  <a href="#s11">Timeline</a>
+  <a href="#s14">Risks</a>
+  <a href="#s15">Roadmap</a>
+  <a href="#s17">Handover</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s1">1. Project Vision</h2>
+
+<p><strong>This is NOT only a CERN DRD8 WP4 project.</strong> The long-term objective is to build a <strong>Personal AI Operating System (Jarvis-like assistant)</strong> — intelligent, proactive, multi-agent system for software engineering, AI development, research, browser/terminal/filesystem automation, voice interaction, vision understanding, and multi-agent orchestration.</p>
+
+<p>The CERN DRD8 WP4 pipeline is <strong>one capability</strong> built on top of this assistant, proving the system can navigate enterprise engineering software, parse industrial CAD, align heterogeneous data, enrich with domain knowledge, and export to physics simulation formats.</p>
+
+<div class="card card-info">
+  <strong>Core Philosophy:</strong> Local-first, cloud-enhanced. Deterministic automation runs locally (rules handle 80% of cases). Heavy AI inference (Gemini/Claude) runs in cloud. All data stored on F: drive (414 GB free). Offline-capable for core automation.
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s2">2. Current Status</h2>
+
+<table>
+  <tr><th>Phase</th><th>Status</th><th>Completion</th></tr>
+  <tr><td>Phase 0 — Foundation</td><td><span class="tag tag-green">COMPLETE</span></td><td>100%</td></tr>
+  <tr><td>Phase 1 — Data Pipeline</td><td><span class="tag tag-orange">IN PROGRESS</span></td><td>~35%</td></tr>
+  <tr><td>Phase 2 — Knowledge Building</td><td><span class="tag tag-gray">PENDING</span></td><td>0%</td></tr>
+  <tr><td>Phase 3 — Scoring &amp; Decision</td><td><span class="tag tag-red">BLOCKED</span></td><td>0%</td></tr>
+  <tr><td>Phase 4 — Production</td><td><span class="tag tag-gray">FUTURE</span></td><td>0%</td></tr>
+</table>
+
+<h3>Module Completion</h3>
+<table>
+  <tr><th>Module</th><th>%</th><th>Status</th></tr>
+  <tr><td>PLM Data Extraction</td><td>35%</td><td>OCR + BOM export working; needs Aras API</td></tr>
+  <tr><td>CATIA/CAD Data</td><td>15%</td><td>STEP parsing works; needs native CATPart files</td></tr>
+  <tr><td>STEP Geometry Parsing</td><td>50%</td><td>Small files OK; 246 MB timeout</td></tr>
+  <tr><td>Entity Alignment</td><td>60%</td><td>Manual at 85% confidence; needs automation</td></tr>
+  <tr><td>Material Enrichment</td><td>25%</td><td>27-material DB built; no material assigned for part</td></tr>
+  <tr><td>Semantic Understanding</td><td>30%</td><td>Rules designed; needs more labeled data</td></tr>
+  <tr><td>Physics Scoring Engine</td><td>10%</td><td style="color:var(--red)">BLOCKED — no material data</td></tr>
+  <tr><td>Knowledge Graph</td><td>20%</td><td>networkx prototype; hierarchy unknown</td></tr>
+  <tr><td>Decision Engine</td><td>5%</td><td style="color:var(--red)">Depends on scoring engine</td></tr>
+  <tr><td>GDML Export</td><td>40%</td><td>Basic export works; needs complex B-Rep</td></tr>
+</table>
+
+<div class="card card-danger">
+  <strong>🔴 Current Blockers:</strong><br>
+  1. Material for ST0973826_01 not assigned — cannot compute physics scoring<br>
+  2. Aras API OAuth client ID not registered — stuck with fragile OCR<br>
+  3. Native CATPart files not available — no feature tree, mass, or materials<br>
+  4. Large STEP file (246 MB, 917 solids) times out at 10 min<br>
+  5. Parent assembly hierarchy unknown — flat BOM export
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s3">3. Architecture</h2>
+
+<h3>High-Level Architecture</h3>
+<div class="flow-diagram">
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         CLOUD LAYER                                      │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────────┐        │
+│  │  Gemini   │  │ OpenRouter│  │Perplexity│  │   CERN PLM       │        │
+│  │2.0/2.5 Pro│  │ GPT-4o   │  │Web Search│  │   (Aras API)     │        │
+│  │ (Primary) │  │Claude 4  │  │ (Fallback)│  │   (Future)       │        │
+│  └─────┬─────┘  └─────┬────┘  └─────┬────┘  └────────┬─────────┘        │
+└────────┼──────────────┼──────────────┼───────────────┼──────────────────┘
+         │              │              │               │
+┌────────┼──────────────┼──────────────┼───────────────┼──────────────────┐
+│        ▼              ▼              ▼               ▼                   │
+│  ┌──────────────────────────────────────────────────────────────────┐    │
+│  │              OPENCLAW (Orchestrator)                              │    │
+│  │  ┌── Mission Orchestrator (Gemini AGI) ──────────────────────┐  │    │
+│  │  │  • Remembers goal across sessions                          │  │    │
+│  │  │  • Prioritizes tasks, detects blockers                    │  │    │
+│  │  │  • Delegates to sub-agents, maintains MEMORY.md           │  │    │
+│  │  └───────────────────────────────────────────────────────────┘  │    │
+│  │         ┌──────────────┬──────────────┐                        │    │
+│  │         ▼              ▼              ▼                        │    │
+│  │  ┌──────────┐  ┌──────────────┐  ┌──────────────┐             │    │
+│  │  │  Coding  │  │  Research    │  │ CAD Auto     │             │    │
+│  │  │  Agent   │  │  Agent       │  │ Agent        │             │    │
+│  │  └──────────┘  └──────────────┘  └──────────────┘             │    │
+│  └──────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌──────────────────────────────────────────────────────────────────┐    │
+│  │              WP4 PIPELINE                                          │    │
+│  │  PLM Desktop ──BOM/OCR──▶ Metadata (71 fields)                   │    │
+│  │  CATIA V5    ──STEP────▶ cadquery Geometry Parsing                │    │
+│  │  OpenCASCADE ──features▶ Shape Classification                     │    │
+│  │  ── Entity Alignment ──▶ Material Enrichment ──▶ Semantic ──▶     │    │
+│  │  ── Scoring ──▶ Decision ──▶ GDML Export ──▶ Geant4/FLUKA        │    │
+│  └──────────────────────────────────────────────────────────────────┘    │
+│                                                                          │
+│  ┌──────────────────────────────────────────────────────────────────┐    │
+│  │              DATA: F:\OpenClaw\                                   │    │
+│  │  PLM Data | CAD Files | Research | Material DB | GDML Output    │    │
+│  └──────────────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────────────┘
+</div>
+
+<h3>Pipeline Data Flow</h3>
+<div class="flow-diagram">
+SOURCE ⇢ EXTRACTION ⇢ PARSING ⇢ ALIGNMENT ⇢ ENRICHMENT ⇢ SCORING ⇢ EXPORT
+
+[PLM Desktop] ───BOM (71 fields)──▶ Field Parser
+             ───OCR (12 children)──▶ Text Extractor
+             ───Aras API (future)──▶ JSON Query Engine
+[CATIA V5]    ───STEP (246MB)─────▶ cadquery OCCT (volume, shape, bbox)
+             ───CATPart (future)──▶ CATIA MCP COM Bridge
+[STEP Files]  ────────────────────▶ OpenCASCADE Geometry Analysis
+                                        │
+                                   [Entity Alignment] — 85% confidence
+                                        │
+                                   [Material Enrichment] — 27 materials DB
+                                        │
+                                   [Semantic Understanding] — rules + LLM
+                                        │
+                                   [Knowledge Graph] — networkx
+                                        │
+                                   [Scoring Engine] — X/X₀ = t×ρ/X₀
+                                        │
+                                   [Decision Engine] — KEEP/SIMPLIFY/REMOVE
+                                        │
+                                   [GDML Export] — Geant4 XML
+</div>
+
+<h3>MCP Server Ecosystem</h3>
+<table>
+  <tr><th>MCP Server</th><th>Purpose</th><th>Status</th></tr>
+  <tr><td>CATIA V5 MCP</td><td>50+ CAD automation tools</td><td><span class="tag tag-orange">Installed, not connected</span></td></tr>
+  <tr><td>Obsidian MCP</td><td>Vault read/write, search</td><td><span class="tag tag-green">Active</span></td></tr>
+  <tr><td>GitHub MCP</td><td>Repos, issues, PRs</td><td><span class="tag tag-green">Active</span></td></tr>
+  <tr><td>Browser Automation</td><td>Playwright web control</td><td><span class="tag tag-green">Active</span></td></tr>
+  <tr><td>himalaya MCP</td><td>Email (Gmail)</td><td><span class="tag tag-orange">Partial</span></td></tr>
+  <tr><td>Perplexity MCP</td><td>Web search</td><td><span class="tag tag-green">Active</span></td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s4">4. Assistant Capabilities</h2>
+
+<table>
+  <tr><th>Capability</th><th>Status</th><th>Technology</th></tr>
+  <tr><td>Conversational AI</td><td><span class="tag tag-green">Working</span></td><td>Gemini 2.0 Flash</td></tr>
+  <tr><td>Code Generation</td><td><span class="tag tag-green">Working</span></td><td>Coding Agent (sub-agent)</td></tr>
+  <tr><td>File System Automation</td><td><span class="tag tag-green">Working</span></td><td>Bash + Python scripts</td></tr>
+  <tr><td>Git Automation</td><td><span class="tag tag-green">Working</span></td><td>Git CLI</td></tr>
+  <tr><td>Desktop Automation</td><td><span class="tag tag-green">Working</span></td><td>PyAutoGUI + Tesseract</td></tr>
+  <tr><td>PLM Data Extraction</td><td><span class="tag tag-green">Working</span></td><td>OCR + BOM export</td></tr>
+  <tr><td>CAD Geometry Parsing</td><td><span class="tag tag-green">Working</span></td><td>cadquery / OpenCASCADE</td></tr>
+  <tr><td>GDML Export</td><td><span class="tag tag-green">Working</span></td><td>Custom XML writer</td></tr>
+  <tr><td>Multi-Agent Orchestration</td><td><span class="tag tag-green">Working</span></td><td>4 agents (Mission/Coding/Research/CAD)</td></tr>
+  <tr><td>Web Search</td><td><span class="tag tag-green">Working</span></td><td>Perplexity via OpenRouter</td></tr>
+  <tr><td>Knowledge Management</td><td><span class="tag tag-green">Working</span></td><td>Obsidian vault integration</td></tr>
+  <tr><td>Email (read)</td><td><span class="tag tag-orange">Partial</span></td><td>himalaya MCP</td></tr>
+  <tr><td>Browser Automation</td><td><span class="tag tag-orange">Partial</span></td><td>Playwright plugin</td></tr>
+  <tr><td>CATIA MCP Live</td><td><span class="tag tag-red">Not Connected</span></td><td>Needs CATIA V5 running</td></tr>
+  <tr><td>Voice Assistant</td><td><span class="tag tag-gray">Disabled</span></td><td>Whisper + TTS skills off</td></tr>
+  <tr><td>Vision Understanding</td><td><span class="tag tag-gray">Disabled</span></td><td>camera.snap denied in gateway</td></tr>
+  <tr><td>Telegram / Zulip</td><td><span class="tag tag-gray">Inert</span></td><td>Configured, no active connections</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s5">5. Development Environment</h2>
+
+<table>
+  <tr><th>Component</th><th>Value</th></tr>
+  <tr><td>OS</td><td>Windows 10 Pro 64-bit (10.0.19045)</td></tr>
+  <tr><td>Hostname</td><td>PCCA2063</td></tr>
+  <tr><td>User</td><td>cern\vvinayku</td></tr>
+  <tr><td>C: drive free</td><td>82.73 GB</td></tr>
+  <tr><td>F: drive free</td><td>413.80 GB — primary data drive</td></tr>
+  <tr><td>Python</td><td>3.13.14</td></tr>
+  <tr><td>Node.js</td><td>24.15.0</td></tr>
+  <tr><td>npm</td><td>11.12.1</td></tr>
+  <tr><td>Git</td><td>2.54.0</td></tr>
+  <tr><td>OpenClaw</td><td>2026.6.9</td></tr>
+  <tr><td>Tesseract OCR</td><td>5.5.0</td></tr>
+  <tr><td>Primary editor</td><td>VS Code / Cursor</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s6">6. AI Stack</h2>
+
+<table>
+  <tr><th>Priority</th><th>Model</th><th>Provider</th><th>Use Case</th><th>Status</th></tr>
+  <tr><td>1</td><td>Gemini 2.0 Flash</td><td>gemini API</td><td>Default orchestration</td><td><span class="tag tag-green">Active</span></td></tr>
+  <tr><td>2</td><td>Gemini 2.5 Pro</td><td>gemini API</td><td>Complex reasoning</td><td><span class="tag tag-green">Active</span></td></tr>
+  <tr><td>3</td><td>GPT-4o</td><td>OpenRouter</td><td>Fallback LLM</td><td><span class="tag tag-green">Active</span></td></tr>
+  <tr><td>4</td><td>Claude Sonnet 4</td><td>OpenRouter</td><td>Architecture/debugging</td><td><span class="tag tag-green">Active</span></td></tr>
+  <tr><td>5</td><td>gemma4:e4b</td><td>Ollama (local)</td><td>Local fallback</td><td><span class="tag tag-red">Not running</span></td></tr>
+</table>
+
+<p><strong>Routing:</strong> Routine → Gemini 2.0 Flash. Complex → Gemini 2.5 Pro. Fallback → OpenRouter GPT-4o. Critical code → Claude Sonnet 4.</p>
+
+<div class="card card-info">
+  <strong>Web Search:</strong> Perplexity via OpenRouter API key. Configured in openclaw.json plugins.
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s7">7. Automation Platform</h2>
+
+<h3>Desktop Automation (PLM)</h3>
+<p>PyAutoGUI + Tesseract OCR 5.5. Performance: mouse move ~0ms, screenshot ~130ms, full OCR ~3-4s, record extraction ~3s. Mapped 60+ UI elements for PLM Desktop navigation.</p>
+
+<h3>STEP Geometry Parsing</h3>
+<p>cadquery 2.8.0 / OpenCASCADE 7.9.3. Extracts volume, surface area, bounding box, shape classification (cylinder, plate, block, rod, irregular), aspect ratio, thickness estimate. 30MB (20 solids) → 43s. 2.7MB (17 solids) → 3s. 246MB (917 solids) → timeout &gt;10min.</p>
+
+<h3>GDML Export</h3>
+<p>Custom Python writer producing Geant4-compatible XML. Supports box, tube solids, material assignment, position/rotation, world volume.</p>
+
+<h3>Log Rotation</h3>
+<p>Scheduled task daily at 02:00. Keeps 90 days of logs. Script at <code>F:\OpenClaw\memory\rotate-logs.js</code>.</p>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s8">8. Remote Development</h2>
+
+<p>Mac (personal) ↔ CERN PC (PCCA2063) workflow. SSH key-based access with id_ed25519. All CERN engineering tools (PLM Desktop, CATIA V5) are Windows-only — requires Remote Desktop or on-site presence for desktop automation.</p>
+
+<p><strong>File sync:</strong> CERNBox for Obsidian vault + project docs. Git for code. Network drives for CAD files.</p>
+
+<div class="card card-warn">
+  <strong>⚠ SSH Agent is currently Stopped/Disabled.</strong> Start it before attempting key-based SSH: <code>Start-Service ssh-agent</code>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s9">9. Security</h2>
+
+<div class="card card-danger">
+  <strong>🔴 API Keys in Plaintext</strong> — openclaw.json contains Gemini key (<code>AQ.Ab...</code>), OpenRouter/Perplexity key (<code>sk-or-v1-...</code>), and Google Places key. File is in .gitignore but still a risk.
+</div>
+
+<table>
+  <tr><th>Risk</th><th>Severity</th><th>Mitigation</th></tr>
+  <tr><td>API keys in config</td><td><span class="tag tag-red">HIGH</span></td><td>Move to credential store</td></tr>
+  <tr><td>Server unsecured</td><td><span class="tag tag-orange">MEDIUM</span></td><td>Set OPENCODE_SERVER_PASSWORD</td></tr>
+  <tr><td>PyAutoGUI input simulation</td><td><span class="tag tag-orange">MEDIUM</span></td><td>May trigger CERN endpoint protection</td></tr>
+  <tr><td>SSH agent disabled</td><td><span class="tag tag-gray">LOW</span></td><td>Start when needed</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s10">10. CERN DRD8 WP4</h2>
+
+<p><strong>Part:</strong> ST0973826_01 — "L2 INTEGRATED LONGERON - A-SIDE COOLING PIPE" (ATLAS Pixel Outer Barrel)<br>
+<strong>Author:</strong> Alexandre Perez (CATIA V5R27 SP6)<br>
+<strong>Status:</strong> In Preparation, Rev AA.01, Gen 2 (Frozen, Not Released)<br>
+<strong>WP Leaders:</strong> Diego Alvarez Feito, Joao Batista Lopes</p>
+
+<h3>CERN URLs</h3>
+<table>
+  <tr><th>Resource</th><th>URL</th></tr>
+  <tr><td>PLM Web Client</td><td>https://plm.cern.ch/prod/Client/</td></tr>
+  <tr><td>PLM Service (docs)</td><td>https://plm-service.web.cern.ch/</td></tr>
+  <tr><td>ChatPLM (AI beta)</td><td>https://plm.cern.ch/chat</td></tr>
+  <tr><td>Aras OData API</td><td>https://plm.cern.ch/server/odata</td></tr>
+  <tr><td>DRD8 WP4 Official</td><td>https://drd8.web.cern.ch/work-package-4</td></tr>
+</table>
+
+<h3>CERN Contacts</h3>
+<table>
+  <tr><th>Contact</th><th>Purpose</th></tr>
+  <tr><td>Diego Alvarez Feito</td><td>WP4 Leader — material, Aras API, direction</td></tr>
+  <tr><td>plm-support@cern.ch</td><td>PLM access, 3D Catalog, API support</td></tr>
+  <tr><td>catia.support@cern.ch</td><td>Native CAD files</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s11">11. Timeline</h2>
+
+<table>
+  <tr><th>Date</th><th>Event</th></tr>
+  <tr><td>2026-04-21</td><td>OpenClaw initial setup — workspace, CATIA MCP</td></tr>
+  <tr><td>2026-06-08</td><td>Phase 1 tools installed (cadquery, pyg4ometry, GDML)</td></tr>
+  <tr><td>2026-06-08</td><td>Desktop automation verified — PLM detection, OCR, click</td></tr>
+  <tr><td>2026-06-08</td><td>MISSION.md created — Detector Knowledge Reconstruction</td></tr>
+  <tr><td>2026-06-23</td><td>Data repository organized, PLM schema documented (71 fields)</td></tr>
+  <tr><td>2026-06-23</td><td>STEP parsing on sub-components (37 solids, 378k cm³)</td></tr>
+  <tr><td>2026-06-23</td><td>Obsidian cleanup (218 → 80 WP4 files), Diego report written</td></tr>
+  <tr><td>2026-06-23</td><td>Tool reference expanded to 30 tools</td></tr>
+  <tr><td>2026-06-24</td><td>Comprehensive architecture + HTML report completed</td></tr>
+  <tr><td>2026-06-24</td><td><strong>Diego meeting</strong> — pipeline demo, blockers identified</td></tr>
+  <tr><td>2026-06-26</td><td>Vite React dashboard scaffolded (9 pages, 641 KB build)</td></tr>
+  <tr><td>2026-07-01</td><td>Complete system report generated (this document)</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s12">12. Software Inventory</h2>
+
+<table>
+  <tr><th>Software</th><th>Version</th><th>Installed Via</th></tr>
+  <tr><td>Git</td><td>2.54.0</td><td>winget</td></tr>
+  <tr><td>Node.js</td><td>24.15.0</td><td>winget</td></tr>
+  <tr><td>Python 3.13</td><td>3.13.14</td><td>winget</td></tr>
+  <tr><td>Tesseract OCR</td><td>5.5.0</td><td>winget</td></tr>
+  <tr><td>Obsidian</td><td>1.12.7</td><td>winget</td></tr>
+  <tr><td>GitHub Desktop</td><td>3.5.8</td><td>winget</td></tr>
+  <tr><td>OpenClaw</td><td>2026.6.9</td><td>npm global</td></tr>
+  <tr><td>cadquery</td><td>2.8.0</td><td>pip (venv)</td></tr>
+  <tr><td>pyg4ometry</td><td>—</td><td>conda</td></tr>
+  <tr><td>PyAutoGUI</td><td>0.9.54</td><td>pip (venv)</td></tr>
+  <tr><td>React</td><td>19.2.7</td><td>npm (WP4 app)</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s13">13. Important Commands</h2>
+
+<table>
+  <tr><th>Command</th><th>Purpose</th></tr>
+  <tr><td><code>opencode</code></td><td>Start interactive CLI session</td></tr>
+  <tr><td><code>opencode serve --port 4096</code></td><td>Start server mode</td></tr>
+  <tr><td><code>npm run dev</code> (in wp4-pipeline)</td><td>Start Vite dev server (localhost:5173)</td></tr>
+  <tr><td><code>npm run build</code></td><td>Build React app for production</td></tr>
+  <tr><td><code>python step_parser.py file.stp</code></td><td>Parse STEP file</td></tr>
+  <tr><td><code>python plm_final_demo.py</code></td><td>Run PLM desktop demo</td></tr>
+  <tr><td><code>python -m catia_mcp</code></td><td>Start CATIA MCP server</td></tr>
+  <tr><td><code>git -C "F:\OpenClaw" log --oneline</code></td><td>View commit history</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s14">14. Risks</h2>
+
+<div class="card card-danger">
+  <strong>🔴 Primary Security Risk:</strong> API keys for Gemini, OpenRouter/Perplexity, and Google Places are stored in plaintext in <code>openclaw.json</code>. While the file is in .gitignore, it's still a concern for production use.
+</div>
+
+<div class="card card-warn">
+  <strong>⚠ Endpoint Protection Triggers:</strong><br>
+  • PyAutoGUI mouse/keyboard automation — may be flagged as keylogger/macro<br>
+  • Tesseract OCR screen capture — data exfiltration concern<br>
+  • Python COM (pywin32) — COM automation for CATIA<br>
+  • Win32 ctypes — low-level Windows API calls<br>
+  All are legitimate engineering development activities on CERN PC.
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s15">15. Roadmap</h2>
+
+<h3>Immediate (Next Session)</h3>
+<ol>
+  <li>Ask Diego for material source (3D Catalog query)</li>
+  <li>Ask Diego for Aras API OAuth client ID</li>
+  <li>Ask Diego for native CATPart/CATProduct files</li>
+  <li>Request simplified STEP export from CATIA team</li>
+  <li>Start SSH agent for remote Mac access</li>
+</ol>
+
+<h3>Short-Term (Weeks 1-2)</h3>
+<ol>
+  <li>Build material scoring engine (1-2 days) — unblocked once material known</li>
+  <li>Implement semantic classifier rules (2-3 days)</li>
+  <li>Connect CATIA MCP to live CATIA session (1 day)</li>
+  <li>Implement progressive STEP parsing for large files (2 days)</li>
+  <li>Build Aras API query module (2-3 days) — needs OAuth client ID</li>
+</ol>
+
+<h3>Medium-Term (Weeks 3-8)</h3>
+<ol>
+  <li>Decision engine implementation (1 day)</li>
+  <li>Validate decisions against physicist judgment (1 week)</li>
+  <li>Integrate VAQUERO STEP AP242 ontology (3 days)</li>
+  <li>Label 200+ training solids (ongoing)</li>
+</ol>
+
+<h3>Long-Term (Months 3-12)</h3>
+<ol>
+  <li>CGAL mesh simplification on Linux VM</li>
+  <li>Neo4j knowledge graph migration</li>
+  <li>Voice assistant (Whisper + TTS)</li>
+  <li>Vision understanding (screenshot analysis)</li>
+  <li>Proactive daily briefing</li>
+  <li>Multi-machine orchestration (Mac + Windows + Linux)</li>
+</ol>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s16">16. Executive Summary</h2>
+
+<div class="card">
+<p><strong>OpenClaw</strong> is a Personal AI Operating System built on a CERN Windows 10 workstation. It orchestrates 4+ autonomous agents (Mission, Coding, Research, CAD) using a multi-agent AGI architecture with Gemini as primary LLM and OpenRouter as fallback.</p>
+
+<p>The current <strong>Phase 1 deliverable</strong> is a Detector Knowledge Reconstruction pipeline for CERN DRD8 WP4 — extracting engineering data from PLM Desktop (71 fields via OCR/BOM), parsing CAD geometry (37 solids via cadquery), aligning entities across systems (85% confidence), enriching with material physics (27 materials), and exporting to Geant4 GDML.</p>
+
+<p><strong>Working:</strong> Desktop automation, STEP geometry parsing (sub-components), material DB, GDML writer, entity alignment (manual), React dashboard (9 pages), comprehensive documentation (30+ tools).</p>
+
+<p><strong>Blocked:</strong> Material not assigned for ST0973826_01 — cannot compute physics scoring. Aras API access not granted — stuck with OCR. No native CATIA files — no feature tree/mass. Large STEP file (246MB) times out.</p>
+
+<p><strong>Key architecture decisions:</strong> Rules-before-AI (80% rule engine, 20% LLM), local-first with cloud enhancement, markdown-based memory, modular multi-agent orchestration, physics scoring as late stage.</p>
+
+<p><strong>Next move:</strong> Contact Diego for material, Aras API client ID, native CAD files, simplified STEP export.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="s17">17. Handover Notes</h2>
+
+<h3>Quick-Start Checklist</h3>
+<ul class="checklist">
+  <li>Read <code>MISSION.md</code> at workspace root — core directive</li>
+  <li>Read <code>MEMORY.md</code> — current project state</li>
+  <li>Read <code>tool_reference.md</code> — 30 tools documented</li>
+  <li>Read <code>architecture_flow.md</code> — complete flow diagram</li>
+  <li>Check <code>entity_alignment.json</code> — PLM data for ST0973826_01</li>
+  <li>Run <code>npm run dev</code> in <code>F:\OpenClaw\app\wp4-pipeline\</code> — view dashboard</li>
+  <li>Run <code>git -C "F:\OpenClaw" log --oneline -5</code> — recent commits</li>
+  <li>Identify current blockers and prioritize</li>
+  <li>Contact Diego for material + Aras API + native CAD</li>
+</ul>
+
+<h3>Critical Files</h3>
+<table>
+  <tr><th>File</th><th>Path</th><th>Purpose</th></tr>
+  <tr><td>MISSION.md</td><td>F:\OpenClaw\workspace\MISSION.md</td><td>Core directive — read first</td></tr>
+  <tr><td>MEMORY.md</td><td>F:\OpenClaw\workspace\MEMORY.md</td><td>Long-term project memory</td></tr>
+  <tr><td>openclaw.json</td><td>C:\Users\vvinayku\.openclaw\openclaw.json</td><td>AI config + API keys</td></tr>
+  <tr><td>Entity Alignment</td><td>F:\OpenClaw\data\plm\ST0973826_01\entity_alignment.json</td><td>71-field PLM record</td></tr>
+  <tr><td>STEP Parser</td><td>F:\OpenClaw\pipeline\skills\wp4-automation\step_parser.py</td><td>Geometry extraction</td></tr>
+  <tr><td>GDML Writer</td><td>F:\OpenClaw\pipeline\skills\wp4-automation\gdml_writer.py</td><td>Geant4 XML export</td></tr>
+  <tr><td>Material DB</td><td>F:\OpenClaw\pipeline\skills\wp4-automation\material_db.json</td><td>27 materials</td></tr>
+  <tr><td>PLM Desktop Skill</td><td>F:\OpenClaw\pipeline\skills\plm_skill.py</td><td>PLM automation</td></tr>
+  <tr><td>React App</td><td>F:\OpenClaw\app\wp4-pipeline\src\App.jsx</td><td>Dashboard source</td></tr>
+</table>
+
+<h3>Open Questions</h3>
+<ol>
+  <li>Where does ST0973826_01's material data live? (3D Catalog? CATIA native? Engineer knowledge?)</li>
+  <li>Can we get Aras API OAuth client ID within reasonable timeframe?</li>
+  <li>Who is the CATIA designer who can provide simplified STEP export?</li>
+  <li>What is the parent assembly for ST0973826_01? (Full hierarchy unknown)</li>
+  <li>Is CATIA V5 installed and licensed on PCCA2063? (MCP server not yet tested)</li>
+  <li>Can PLMXML export give full assembly hierarchy with transforms?</li>
+  <li>What is CERN's policy on automated UI interaction (PyAutoGUI)?</li>
+</ol>
+
+<hr>
+
+<p style="text-align:center;color:var(--text2);font-size:13px;">
+  <em>End of Report. Generated 2026-07-01 by OpenClaw.<br>
+  Report locations: Obsidian vault → CERN-DRD8-WP4/08_Reports/ • CERNBox → Documents/OpenClaw-Reports/</em>
+</p>
+
+</main>
+</body>
+</html>

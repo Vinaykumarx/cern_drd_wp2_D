@@ -1,0 +1,23 @@
+graph LR
+    subgraph Ingestion[Ingestion Layer]
+        A[PDF Ingestion] --> B[Docling Parser]
+        B --> C[VLM Fallback]
+    end
+    subgraph Storage[Storage Layer]
+        D[Hybrid Chunking] --> E[BGE Embeddings]
+        E --> F[LanceDB]
+    end
+    subgraph Retrieval[Retrieval Layer]
+        G[Retrieval] --> H[Cross-Encoder Rerank]
+    end
+    subgraph Generation[Generation Layer]
+        I[LLM Reasoning] --> J[Citation Engine]
+        J --> K[Web UI]
+    end
+    C --> D
+    F --> G
+    H --> I
+    style Ingestion fill:#e8f4fd,stroke:#2196F3
+    style Storage fill:#e8f5e9,stroke:#4CAF50
+    style Retrieval fill:#fff3e0,stroke:#FF9800
+    style Generation fill:#f3e5f5,stroke:#9C27B0

@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-06-16T10:03:53.710127+00:00",
+  "note": "baseline freeze of current RAG behavior",
+  "torch_version": "2.11.0+cu130",
+  "cuda_available": true,
+  "cuda_device": "NVIDIA GeForce RTX 5090",
+  "sentence_transformers_version": "5.2.3",
+  "lancedb_version": "0.25.3"
+}

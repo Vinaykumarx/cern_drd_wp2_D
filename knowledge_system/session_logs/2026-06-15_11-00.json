@@ -1,0 +1,20 @@
+{
+  "session_id": "ses_streamlit_deprecation",
+  "task_id": "TASK-0006",
+  "changes": [
+    "app/streamlit_app.py → app/streamlit_app_DEPRECATED.py (renamed)",
+    "app/streamlit_app_DEPRECATED.py: removed direct imports of core.rag_pipeline, core.document_manager, core.session_manager, extraction.extract_with_docid",
+    "app/streamlit_app_DEPRECATED.py: replaced 3 ingestion paths with FastAPI HTTP calls (/api/import_remote, /api/upload)",
+    "app/streamlit_app_DEPRECATED.py: replaced direct RAGPipeline.search() with /api/chat HTTP call",
+    "app/streamlit_app_DEPRECATED.py: replaced direct DocumentManager/SessionManager with /api/all_documents, /api/sessions, /api/chat/{session_id}",
+    "app/streamlit_app_DEPRECATED.py: added httpx import and API helper functions",
+    "app/streamlit_app_DEPRECATED.py: added DEPRECATED header",
+    "scripts/refactor_ui.py: updated streamlit_app.py → streamlit_app_DEPRECATED.py",
+    "scripts/test_ux_features.py: updated streamlit_app.py → streamlit_app_DEPRECATED.py",
+    "examples/multi_doc_example.py: updated streamlit_app.py → streamlit_app_DEPRECATED.py"
+  ],
+  "bugs": [],
+  "state_before": "Streamlit had 3 direct ingestion bypass paths calling extract_with_docid + rag_pipeline directly. Had direct RAGPipeline, DocumentManager, SessionManager imports. Bypassed FastAPI entirely.",
+  "state_after": "Streamlit refactored to API-only client. All ingestion goes through FastAPI (/api/import_remote, /api/upload). All retrieval goes through FastAPI (/api/chat). All doc/session ops go through FastAPI (/api/*). File renamed to streamlit_app_DEPRECATED.py.",
+  "next_step": "Verify no remaining direct core module imports in Streamlit. Then begin Phase 1 critical fixes (TASK-0001: LanceDB sync fix)."
+}

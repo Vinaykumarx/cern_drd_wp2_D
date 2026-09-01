@@ -1,0 +1,33 @@
+{
+  "session_id": "2026-06-15_16-27",
+  "timestamp": "2026-06-15T16:27:00Z",
+  "task_id": "TASK-0004",
+  "task_title": "Replace pymupdf4llm with Docling",
+  "phase": "TASK-0004 Extraction Audit",
+  "files_modified": [
+    "control_center/PROJECT_STATE.md",
+    "control_center/TASKS.json",
+    "knowledge_system/session_index.json",
+    "knowledge_system/latest_state.md",
+    "knowledge_system/session_logs/2026-06-15_16-27.json"
+  ],
+  "files_read": [
+    "extraction/extract_with_docid.py",
+    "core/docling_parser.py",
+    "core/rag_pipeline.py",
+    "control_center/PROJECT_STATE.md",
+    "control_center/TASKS.json",
+    "knowledge_system/session_index.json",
+    "knowledge_system/latest_state.md"
+  ],
+  "bugs_fixed": [],
+  "bugs_introduced": [],
+  "reasoning_summary": "Performed extraction audit for TASK-0004. Read extract_with_docid.py (canonical entry point), docling_parser.py (existing Docling prototype), and rag_pipeline.py (downstream consumer). Mapped current extraction architecture: Docling primary at lines 202-263 (doc.iterate_items()), pymupdf4llm fallback at lines 266-302 (page-by-page to_markdown()). Docling is ALREADY the primary path — pymupdf4llm is only the fallback. Downstream consumers (rag_pipeline.py lines 142-245) expect metadata.json with pages[], tables{}, figures{} keys. Docling prototype in docling_parser.py uses DocumentConverter with === PAGE X === markers. Identified that migration needs to: (1) Remove pymupdf4llm fallback, (2) Improve Docling item-walking for better page grouping, (3) Integrate Docling's native table extraction, (4) Keep metadata.json format identical. Awaiting approval to implement.",
+  "before_state": "Phases A-G complete. pymupdf4llm fallback active in extract_with_docid.py:278. Docling primary (lines 202-263) working but unoptimized. TASK-0004 status: pending. State files stale.",
+  "after_state": "TASK-0004 status: in_progress. Extraction audit complete — full mapping of pymupdf4llm/Docling usage and downstream consumers. State files updated. READY for migration plan approval.",
+  "next_steps": [
+    "Present comprehensive migration plan for Docling replacement",
+    "Await approval before implementing code changes",
+    "Implementation: remove pymupdf4llm fallback, improve Docling item-walking, integrate Docling table extraction, add VLM recovery path"
+  ]
+}

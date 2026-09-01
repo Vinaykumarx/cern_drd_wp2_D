@@ -1,0 +1,16 @@
+erDiagram
+    DOCUMENT_CHUNKS ||--|{ SOURCE_DOCS : "belongs to"
+    DOCUMENT_CHUNKS {
+        uuid id PK
+        string text
+        json metadata
+        vector_768d embedding
+        string source_doc
+        int page_num
+        string chunk_type
+    }
+    SOURCE_DOCS {
+        string title
+        string author
+        string date
+    }

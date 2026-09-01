@@ -1,0 +1,8 @@
+Unknown serde type: graph TD
+    A[Research Agent] --> B[Local Vector DB]
+    B --> C[CDS API Fallback]
+    C --> D[Verification Agent]
+    D --> E[Cross-Encoder Reranking]
+    E --> F[Synthesis Agent]
+    F --> G[Citation-Grounded Answer]
+    style A fill

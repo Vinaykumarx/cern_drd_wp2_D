@@ -1,0 +1,12 @@
+graph TD
+    A[Research Agent] --> B[Local Vector DB]
+    B --> C[CDS API Fallback]
+    C --> D[Verification Agent]
+    D --> E[Cross-Encoder Reranking]
+    E --> F[Synthesis Agent]
+    F --> G[Citation-Grounded Answer]
+    style A fill:#ffe6cc,stroke:#ff9900,stroke-width:2px
+    style D fill:#cce6ff,stroke:#0099ff,stroke-width:2px
+    style E fill:#ffcccc,stroke:#ff0066,stroke-width:2px
+    style F fill:#ccccff,stroke:#6600ff,stroke-width:2px
+    style G fill:#99ff99,stroke:#00cc00,stroke-width:2px

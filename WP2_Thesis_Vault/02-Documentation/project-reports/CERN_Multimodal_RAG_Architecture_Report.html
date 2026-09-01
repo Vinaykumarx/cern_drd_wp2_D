@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CERN Multimodal RAG Platform — Complete Architecture & Program Report</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+  line-height: 1.6; color: #1a1a2e; background: #f0f2f5; padding: 40px 20px;
+}
+.container { max-width: 1200px; margin: 0 auto; }
+h1 { font-size: 2.2em; margin-bottom: 8px; color: #c8102e; }
+.subtitle { font-size: 1.1em; color: #555; margin-bottom: 40px; }
+h2 {
+  font-size: 1.5em; margin: 40px 0 16px; padding-bottom: 8px;
+  border-bottom: 3px solid #c8102e; color: #1a1a2e;
+}
+h3 { font-size: 1.2em; margin: 24px 0 12px; color: #2d3436; }
+h4 { font-size: 1.05em; margin: 16px 0 8px; color: #636e72; }
+p { margin: 8px 0; }
+.card {
+  background: white; border-radius: 12px; padding: 24px;
+  margin: 16px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+.tag {
+  display: inline-block; padding: 2px 10px; border-radius: 12px;
+  font-size: 0.8em; font-weight: 600;
+}
+.tag-green { background: #d4edda; color: #155724; }
+.tag-blue { background: #d1ecf1; color: #0c5460; }
+.tag-red { background: #f8d7da; color: #721c24; }
+.tag-yellow { background: #fff3cd; color: #856404; }
+.tag-purple { background: #e8daef; color: #6c3483; }
+.tag-orange { background: #fdebd0; color: #935116; }
+
+table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #e0e0e0; }
+th { background: #f8f9fa; font-weight: 600; color: #2d3436; }
+tr:hover { background: #f1f3f5; }
+
+.timeline { position: relative; padding-left: 30px; }
+.timeline::before {
+  content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+  width: 3px; background: #c8102e; border-radius: 3px;
+}
+.timeline-item { position: relative; margin: 20px 0; }
+.timeline-item::before {
+  content: ''; position: absolute; left: -22px; top: 6px;
+  width: 14px; height: 14px; border-radius: 50%; background: #c8102e;
+  border: 3px solid #f0f2f5;
+}
+.timeline-date { font-size: 0.85em; color: #c8102e; font-weight: 600; }
+.timeline-title { font-weight: 600; font-size: 1.05em; }
+
+.phase-box {
+  background: white; border-left: 5px solid #c8102e; border-radius: 8px;
+  padding: 16px 20px; margin: 12px 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.phase-box.completed { border-left-color: #27ae60; }
+.phase-box.in-progress { border-left-color: #f39c12; }
+.phase-box.blocked { border-left-color: #e74c3c; }
+.phase-box.pending { border-left-color: #95a5a6; }
+
+.chart-bar {
+  display: flex; height: 28px; border-radius: 14px; overflow: hidden; margin: 8px 0;
+}
+.chart-bar .segment { display: flex; align-items: center; justify-content: center; font-size: 0.75em; color: white; font-weight: 600; }
+
+.mermaid-placeholder {
+  background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 12px;
+  padding: 40px; text-align: center; font-family: monospace; white-space: pre;
+  overflow-x: auto; font-size: 0.85em; line-height: 1.4; margin: 16px 0;
+}
+
+.screenshot {
+  border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  max-width: 100%; height: auto; margin: 16px 0; border: 1px solid #e0e0e0;
+}
+.screenshot-sm { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.screenshot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+.screenshot-card {
+  background: white; border-radius: 10px; overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin: 16px 0;
+}
+.screenshot-card img { width: 100%; height: auto; display: block; }
+.screenshot-card .caption {
+  padding: 12px 16px; font-size: 0.9em; color: #555;
+  border-top: 1px solid #eee;
+}
+
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: 1fr; }
+  .screenshot-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>CERN Multimodal RAG Platform</h1>
+<p class="subtitle">
+  Complete Architecture &amp; Program Report &mdash; Vinay Kumar &bull; CERN DRD8 WP2.2 &bull; July 2026<br>
+  <span style="font-size:0.9em;color:#888;">AI-Assisted Knowledge Structuring for Radiation-Damage Materials</span>
+</p>
+
+<!-- ============================================================ -->
+<!-- SECTION 1: EXECUTIVE SUMMARY                                 -->
+<!-- ============================================================ -->
+<div class="card">
+<h2>1. Executive Summary</h2>
+<p>
+  This project develops a <strong>local-first, multimodal scientific document intelligence system</strong> for CERN. 
+  It transforms decades of radiation-damage knowledge locked in legacy PDFs (Yellow Reports, IAEA documents, vendor datasheets) 
+  into a trusted, searchable, citation-grounded knowledge layer for materials research.
+</p>
+<div class="grid-3" style="margin-top:16px;">
+  <div style="text-align:center;padding:12px;background:#f8f9fa;border-radius:8px;">
+    <div style="font-size:2em;font-weight:700;color:#c8102e;">100%</div>
+    <div>Local-First Architecture</div>
+  </div>
+  <div style="text-align:center;padding:12px;background:#f8f9fa;border-radius:8px;">
+    <div style="font-size:2em;font-weight:700;color:#27ae60;">Phases A–G</div>
+    <div>7/7 Completed &amp; Locked</div>
+  </div>
+  <div style="text-align:center;padding:12px;background:#f8f9fa;border-radius:8px;">
+    <div style="font-size:2em;font-weight:700;color:#f39c12;">2027</div>
+    <div>Public Beta Target</div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 2: PROJECT OVERVIEW                                  -->
+<!-- ============================================================ -->
+<div class="card">
+<h2>2. Project Overview</h2>
+<div class="grid-2">
+<div>
+<h4>What It Is</h4>
+<ul style="padding-left:20px;">
+  <li>Retrieval-Augmented Generation (RAG) system for CERN scientific PDFs</li>
+  <li>Extracts text, tables, figures, graphs from scanned and born-digital documents</li>
+  <li>Stores vector embeddings in <strong>LanceDB</strong> with 16-field metadata schema</li>
+  <li>Retrieves relevant passages with cross-encoder reranking (768-dim BGE embeddings)</li>
+  <li>Generates citation-grounded answers through a 3-phase AI pipeline</li>
+  <li>Serves answers via <strong>Next.js 15</strong> web dashboard + FastAPI backend</li>
+</ul>
+</div>
+<div>
+<h4>What It Is NOT</h4>
+<ul style="padding-left:20px;">
+  <li>Not a chatbot — it's a <strong>scientific knowledge retrieval + verification system</strong></li>
+  <li>Not cloud-dependent — fully local inference (Ollama fallback)</li>
+  <li>Not a generic RAG demo — CERN-specific architecture with strict citation enforcement</li>
+  <li>Not user-upload based — curated, Nicola-controlled document corpus (~1000 pages)</li>
+  <li>Not experimental — proven at 4th DRD8 Collaboration Meeting (4 June 2026)</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 3: TIMELINE & EVOLUTION                              -->
+<!-- ============================================================ -->
+<div class="card">
+<h2>3. Timeline &amp; Architecture Evolution</h2>
+
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="timeline-date">Jun 2025</div>
+    <div class="timeline-title">DRD8 WP2 Workshop — Problem Identified</div>
+    <p>Nicola Pacifico + Souvik (co-authors) present 10-slide deck defining the challenge: decades of CERN radiation-damage data locked in legacy PDFs. The workshop recognizes the need for intelligent document retrieval.</p>
+    <p><span class="tag tag-blue">Reference:</span> <code>DRD8Workshop-WP2.2.pptx</code></p>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-date">Oct 2025</div>
+    <div class="timeline-title">DRD8 Collaboration Week</div>
+    <p>Formal attendance at CERN. Introduction to DRD8 technical committee structure. OTELLO EU call context established.</p>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-date">Nov 2025</div>
+    <div class="timeline-title">Phase 1: Basic RAG Prototype</div>
+    <p>Initial prototype using PyMuPDF + pdfplumber + Ollama. Streamlit frontend. Single-document ingestion. Proof that concept works at small scale.</p>
+    <p><span style="font-size:0.85em;color:#888;">Architecture: Simple RAG (no citation system, no reranking, single model)</span></p>
+    <div style="margin-top:8px;">
+      <img src="images/rag-architecture-flow.png" alt="RAG Architecture Nov 2025" style="max-height:300px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+      <p style="font-size:0.8em;color:#888;margin-top:4px;">Phase 1 architecture: basic RAG with PyMuPDF extraction, Ollama LLM, simple vector store</p>
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-date">Early 2026</div>
+    <div class="timeline-title">OTELLO Proposal Failure + EP R&D Budget Cuts</div>
+    <p>Funding setback forces DRD8 to reshape scope. The RAG project continues as a focused internal initiative under Nicola's supervision.</p>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-date">Feb 2026</div>
+    <div class="timeline-title">Phase 2: Prototype Architecture Presented</div>
+    <p>14-slide presentation: <code>AIAssisted-Knowledge-Structuring-for-RadiationDamage-Materials (1).pptx</code>. </p>
+    <p>Architecture evolves to include: multimodal extraction (text+tables+figures+graphs), BLIP captioning, OpenCV graph detection. First version of the 3-phase pipeline (Research → Verification → Synthesis) designed.</p>
+    <p><span style="font-size:0.85em;color:#888;">Architecture: Multimodal extraction + BGE embeddings + simple chunking</span></p>
+    <div style="margin-top:8px;">
+      <img src="images/chemical-pipeline-2026.png" alt="Chemical Pipeline Feb 2026" style="max-height:350px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+      <p style="font-size:0.8em;color:#888;margin-top:4px;">CERN RAG Chemical Pipeline (Feb 2026): multimodal extraction pipeline with BLIP captioning, graph detection, CSV table extraction</p>
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-date">25 Feb 2026</div>
+    <div class="timeline-title">DRD8 3rd Collaboration Meeting</div>
+    <p>Presented progress at CERN. Participant list included all WP leads. Showed prototype extraction pipeline.</p>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-date">May–Jun 2026</div>
+    <div class="timeline-title">Phase 3: Production Architecture Hardening</div>
+    <p>Major architectural migration. Seven phases (A–G) executed:</p>
+    <ul style="padding-left:20px;">
+      <li><strong>A — Audit:</strong> Streamlit → API-only architecture; full system audit</li>
+      <li><strong>B — Safety Layer:</strong> Startup validation; deprecated standalone scripts</li>
+      <li><strong>C — Bug Fixes:</strong> 3 critical bugs (LanceDB count desync, async blocking, KG freeze)</li>
+      <li><strong>D — Memory Layer:</strong> session_index.json, project_memory_loader.py</li>
+      <li><strong>E — System Lock:</strong> architecture_validator.py (AST scanner), bootstrap.py, SYSTEM_LOCK.md</li>
+      <li><strong>F — Control Center:</strong> Dashboard (FastAPI :8899, 8 panels), MASTER_PLAN.md, DECISIONS.md (6 ADRs)</li>
+      <li><strong>G — Repository Cleanup:</strong> 9 deprecated scripts → archive/, duplicates removed, 0 violations</li>
+    </ul>
+    <p><span style="font-size:0.85em;color:#888;">Architecture: Canonical locked system with AST-based enforcement, Docling integrated (primary), pymupdf4llm as fallback, 0 architecture violations</span></p>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-date">4 Jun 2026</div>
+    <div class="timeline-title" style="font-weight:700;">DRD8 4th Collaboration Meeting — Proof of Principle ✅</div>
+    <p><strong>Milestone:</strong> 22-slide presentation co-authored with Nicola Pacifico. Nicola selected slides from Vinay's detailed deck and presented at the meeting.</p>
+    <p>Key achievements demonstrated:</p>
+    <ul style="padding-left:20px;">
+      <li>Real query: "Material 557 cable-insulating EEA copolymer" — extracted from noisy scanned tables</li>
+      <li>OCR correction: "OXTCEN INDI X" → "Oxygen Index"</li>
+      <li>Cross-document reasoning: Teflon spacer radiation tolerance</li>
+      <li>2-stage safety review pipeline preventing hallucination</li>
+    </ul>
+    <p><span class="tag tag-green">Proof of principle completed</span> <span class="tag tag-purple">Toolset definition at good maturity</span></p>
+    <p><span style="font-size:0.85em;color:#888;">Reference:</span> <code>20260604_DatabaseDevelopment.pdf</code> (22 slides), <code>AI-Assisted-Knowledge-StructuringPPT.pptx</code> (25 slides)</p>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-date">15–18 Jun 2026</div>
+    <div class="timeline-title">TASK-0004: Docling Migration Architecture Phase</div>
+    <p>Docling Capability Gap Analysis completed. Key finding: Docling is <strong>already integrated</strong> as primary path but not fully utilized. Decision to benchmark Docling vs. current pipeline rather than migrate immediately.</p>
+    <p>Four-layer architecture designed: Extraction Contract → Adapter → Validation → Shadow Mode. 4 missing components identified: Evaluation Contract, Comparison Engine, Retrieval Independence Axiom, Pre-Commit Simulation Layer.</p>
+    <p><span class="tag tag-blue">Status:</span> TASK-0004A complete (Architecture Freeze), TASK-0004B–D pending hardware (GPU)</p>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-date">Jun 2026</div>
+    <div class="timeline-title">GPU Resource Request Submitted</div>
+    <p>RTX 5090 failed (fire incident, warranty claim). A100 OpenStack VM requested via CERN IT (RQF3798846). GPU needed for: LLM inference, reranking acceleration, embedding generation (offline batch). System load profile: 10–15 users, curated ~1000 page dataset, predictable query load.</p>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-date">29 Jun 2026</div>
+    <div class="timeline-title">LifeLab Board Meeting</div>
+    <p>Presentation plan drafted for VR Medical Physics project. Separate track from Maxrad/RAG.</p>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-date">Jul 2026</div>
+    <div class="timeline-title">Current Day — Architecture Report Generation</div>
+    <p>Pages doc (<code>CERN_RAG_Final_Architecture 2.pages</code>) finalized with Nicola-aligned production architecture. All three parts complete: System Foundation, Production Design, and CERN Approval Package.</p>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: CURRENT ARCHITECTURE                              -->
+<!-- ============================================================ -->
+<div class="card">
+<h2>4. Current Architecture (Nicola-Aligned, Locked)</h2>
+
+<div class="mermaid-placeholder">
+┌──────────────────────────────────┐
+│     CURATED CERN DOCUMENT SET    │
+│     (NO USER UPLOADS)            │
+└──────────────┬───────────────────┘
+               ▼
+┌──────────────────────────────────┐
+│     OFFLINE INGESTION SYSTEM     │
+│     (NICOLA CONTROLLED)          │
+└──────┬───────────┬───────────────┘
+       ▼           ▼               ▼
+┌──────────┐ ┌──────────┐ ┌────────────┐
+│ DOCLING  │ │  OCR     │ │  METADATA  │
+│ PARSER   │ │  ENGINE  │ │  ENGINE    │
+└────┬─────┘ └────┬─────┘ └─────┬──────┘
+     └────────────┼──────────────┘
+                  ▼
+┌──────────────────────────────────┐
+│    HYBRID CHUNKING ENGINE        │
+│    (STRUCTURE + SEMANTIC)        │
+└──────────────┬───────────────────┘
+               ▼
+┌──────────────────────────────────┐
+│    EMBEDDING LAYER               │
+│    - Text (BGE / E5)             │
+│    - Multimodal (ColPali sel.)   │
+└──────────────┬───────────────────┘
+               ▼
+┌──────────────────────────────────┐
+│    VECTOR DATABASE (LOCAL ONLY)  │
+│    LanceDB / Qdrant / Milvus     │
+└──────────────┬───────────────────┘
+               ▼
+┌──────────────────────────────────┐
+│    RETRIEVAL ENGINE              │
+│    Hybrid + Multi-stage          │
+└──────────────┬───────────────────┘
+               ▼
+┌──────────────────────────────────┐
+│    RERANKING + EVIDENCE FILTER   │
+│    Cross-encoder validation      │
+└──────────────┬───────────────────┘
+               ▼
+┌──────────────────────────────────┐
+│    REASONING ENGINE              │
+│    Local LLM (DeepSeek/Qwen)     │
+│    Evidence-grounded generation  │
+└──────────────┬───────────────────┘
+               ▼
+┌──────────────────────────────────┐
+│    CITATION ENGINE               │
+│    Page-level traceability       │
+└──────────────────────────────────┘
+</div>
+
+<h3>4.1 Locked Components (Do Not Change Without Nicola Approval)</h3>
+<table>
+<tr><th>Component</th><th>Status</th><th>Detail</th></tr>
+<tr><td>Docling as primary parser</td><td><span class="tag tag-green">LOCKED</span></td><td>pymupdf4llm exists only as fallback</td></tr>
+<tr><td>Hybrid chunking</td><td><span class="tag tag-green">LOCKED</span></td><td>Structure-aware + semantic chunking</td></tr>
+<tr><td>Local vector DB</td><td><span class="tag tag-green">LOCKED</span></td><td>LanceDB via VectorStoreLance wrapper only</td></tr>
+<tr><td>Evidence-first retrieval</td><td><span class="tag tag-green">LOCKED</span></td><td>No free-form generation</td></tr>
+<tr><td>Citation enforcement</td><td><span class="tag tag-green">LOCKED</span></td><td>Page-level traceability required</td></tr>
+<tr><td>Local LLM inference</td><td><span class="tag tag-green">LOCKED</span></td><td>DeepSeek/Qwen via Ollama</td></tr>
+<tr><td>No cloud dependency</td><td><span class="tag tag-green">LOCKED</span></td><td>Fully local deployment for core functions</td></tr>
+<tr><td>Pre-ingested dataset</td><td><span class="tag tag-green">LOCKED</span></td><td>Nicola-controlled curation (~1000 pages)</td></tr>
+</table>
+
+<h3>4.2 Modular Components (Can Evolve)</h3>
+<table>
+<tr><th>Component</th><th>Current Choice</th><th>Future Options</th></tr>
+<tr><td>LLM Model</td><td>DeepSeek-R1 / Qwen 35B</td><td>Any local model (pluggable)</td></tr>
+<tr><td>Embedding model</td><td>BAAI/bge-base-en-v1.5 (768-dim)</td><td>E5-large, Nomic, any</td></tr>
+<tr><td>Vector database</td><td>LanceDB</td><td>Qdrant, Milvus, Weaviate</td></tr>
+<tr><td>Multimodal</td><td>ColPali (selective)</td><td>Any VLM</td></tr>
+<tr><td>Chunking strategy</td><td>Header-based + semantic</td><td>Configurable</td></tr>
+<tr><td>Reranker</td><td>ms-marco-MiniLM-L-6-v2</td><td>Any cross-encoder</td></tr>
+<tr><td>Ingestion queue</td><td>FastAPI BackgroundTasks</td><td>Celery + Redis</td></tr>
+</table>
+
+<div class="screenshot-grid">
+  <div class="screenshot-card">
+    <img src="images/solution-architecture.png" alt="Solution Architecture" class="screenshot-sm">
+    <div class="caption">Solution architecture showing the 3-phase pipeline: Research Agent &rarr; Verification Agent &rarr; Synthesis Agent</div>
+  </div>
+  <div class="screenshot-card">
+    <img src="images/architecture-diagram.png" alt="Architecture Diagram" class="screenshot-sm">
+    <div class="caption">System architecture overview from the DRD8 4th Collaboration Meeting presentation</div>
+  </div>
+</div>
+
+<div class="screenshot-grid">
+  <div class="screenshot-card">
+    <img src="images/grounded-rag-architecture.png" alt="Grounded RAG Architecture" class="screenshot-sm">
+    <div class="caption">Grounded RAG architecture: PDF ingestion &rarr; vector store &rarr; retrieval-augmented generation with citation enforcement</div>
+  </div>
+  <div class="screenshot-card">
+    <img src="images/architecture-review.png" alt="Architecture Review" class="screenshot-sm">
+    <div class="caption">Architecture review diagram from the early design phase (Oct 2025)</div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 5: PHASE-WISE PLAN & STATUS                          -->
+<!-- ============================================================ -->
+<div class="card">
+<h2>5. Phase-Wise Plan &amp; Status</h2>
+
+<h3>5.1 Completed Phases (A–G)</h3>
+
+<div class="phase-box completed">
+  <strong>Phase A — Audit &amp; Discovery</strong>
+  <p>Refactored Streamlit to API-only client. Full system baseline audit conducted.</p>
+  <p><span class="tag tag-green">COMPLETED</span></p>
+</div>
+
+<div class="phase-box completed">
+  <strong>Phase B — Runtime Safety Layer</strong>
+  <p>System validation integrated into FastAPI startup. 9 standalone extraction scripts deprecated.</p>
+  <p><span class="tag tag-green">COMPLETED</span></p>
+</div>
+
+<div class="phase-box completed">
+  <strong>Phase C — Critical Bug Fixes</strong>
+  <p>TASK-0001 (LanceDB count desync), TASK-0002 (async event loop blocking), TASK-0003 (KG freeze).</p>
+  <p><span class="tag tag-green">COMPLETED</span></p>
+</div>
+
+<div class="phase-box completed">
+  <strong>Phase D — Global Memory Layer</strong>
+  <p>session_index.json, project_memory_loader.py, AGENTS.md update rule.</p>
+  <p><span class="tag tag-green">COMPLETED</span></p>
+</div>
+
+<div class="phase-box completed">
+  <strong>Phase E — System Lock (Canonical Enforcement)</strong>
+  <p>architecture_validator.py (AST scanner), bootstrap.py, SYSTEM_LOCK.md. 0 violations.</p>
+  <p><span class="tag tag-green">COMPLETED</span></p>
+</div>
+
+<div class="phase-box completed">
+  <strong>Phase F — Control Center Dashboard</strong>
+  <p>FastAPI :8899 with 8 panels. MASTER_PLAN.md + DECISIONS.md (6 ADR records).</p>
+  <p><span class="tag tag-green">COMPLETED</span></p>
+</div>
+
+<div class="phase-box completed">
+  <strong>Phase G — Repository Organization</strong>
+  <p>Archived extraction/ → archive/, cleaned root dir, centralized logs, removed duplicates.</p>
+  <p><span class="tag tag-green">COMPLETED</span> — 0 architecture violations</p>
+</div>
+
+<h3 style="margin-top:24px;">5.2 Current &amp; Pending Tasks</h3>
+
+<div class="phase-box in-progress">
+  <strong>TASK-0004A — Docling Migration Architecture Freeze</strong>
+  <p>Canonical extraction contract defined, Docling adapter design complete, validation layer specified, shadow mode defined, migration gate criteria established. Pending implementation (TASK-0004B–D).</p>
+  <p><span class="tag tag-yellow">ARCHITECTURE COMPLETE</span> <span class="tag tag-blue">AWAITING GPU</span></p>
+</div>
+
+<div class="phase-box blocked">
+  <strong>TASK-0004B — Docling Adapter Implementation</strong>
+  <p>Blocked on: GPU availability (RTX 5090 failed, A100 RQF3798846 pending). Shadow execution requires compute.</p>
+  <p><span class="tag tag-red">BLOCKED</span></p>
+</div>
+
+<div class="phase-box blocked">
+  <strong>TASK-0005 — ColPali Visual Retrieval</strong>
+  <p>Multimodal embedding layer for diagrams, figures, scanned pages. Blocked on GPU + TASK-0004 completion.</p>
+  <p><span class="tag tag-red">BLOCKED</span></p>
+</div>
+
+<div class="phase-box blocked">
+  <strong>TASK-0007 — Hybrid Chunking (BGE + Nomic)</strong>
+  <p>Second embedding model for retrieval diversity. Design complete, pending hardware.</p>
+  <p><span class="tag tag-red">BLOCKED</span></p>
+</div>
+
+<div class="phase-box blocked">
+  <strong>TASK-0008 — DeepSeek Reasoning Layer</strong>
+  <p>Dedicated reasoning model for complex queries. Requires GPU with sufficient VRAM.</p>
+  <p><span class="tag tag-red">BLOCKED</span></p>
+</div>
+
+<div class="phase-box pending">
+  <strong>TASK-0009 — Long-Term Memory Evolution</strong>
+  <p>Session persistence across queries, user-specific knowledge state.</p>
+  <p><span class="tag tag-orange">FUTURE</span></p>
+</div>
+
+<div class="phase-box pending">
+  <strong>OpenClaw → CATIA Integration (TASK-001)</strong>
+  <p>CAD automation for DRD8 WP4. Never executed on CERN PC (3D box demo pending).</p>
+  <p><span class="tag tag-orange">PENDING</span></p>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 6: IMPLEMENTATION DETAILS                            -->
+<!-- ============================================================ -->
+<div class="card">
+<h2>6. Implementation Details &amp; Technology Stack</h2>
+
+<div class="grid-2">
+<div>
+<h4>Core Stack</h4>
+<table>
+<tr><th>Layer</th><th>Technology</th></tr>
+<tr><td>PDF Extraction</td><td>Docling (primary) + pymupdf4llm (fallback)</td></tr>
+<tr><td>Table Extraction</td><td>pdfplumber / Camelot</td></tr>
+<tr><td>Image/Graph Detection</td><td>PyMuPDF + OpenCV</td></tr>
+<tr><td>Image Captioning</td><td>BLIP</td></tr>
+<tr><td>OCR Recovery</td><td>pytesseract</td></tr>
+<tr><td>VLM Layout</td><td>Qwen2-VL-2B-Instruct (experimental)</td></tr>
+<tr><td>Embeddings</td><td>BAAI/bge-base-en-v1.5 (768-dim)</td></tr>
+<tr><td>Vector Database</td><td>LanceDB</td></tr>
+<tr><td>Reranker</td><td>cross-encoder/ms-marco-MiniLM-L-6-v2</td></tr>
+<tr><td>LLM (Cloud)</td><td>OpenRouter / Groq (configurable)</td></tr>
+<tr><td>LLM (Local)</td><td>Ollama — Gemma 4, Qwen 35B, DeepSeek-R1</td></tr>
+<tr><td>Web UI</td><td>Next.js 15 (App Router)</td></tr>
+<tr><td>Backend</td><td>FastAPI</td></tr>
+<tr><td>Dashboard</td><td>Control Center (:8899) — 8 panels</td></tr>
+</table>
+</div>
+<div>
+<h4>System Architecture</h4>
+<table>
+<tr><th>Component</th><th>Lines</th><th>Role</th></tr>
+<tr><td>backend/main.py</td><td>1,509</td><td>FastAPI server</td></tr>
+<tr><td>core/rag_pipeline.py</td><td>439</td><td>Orchestrator: chunk→embed→search→rerank</td></tr>
+<tr><td>core/vector_store_lance.py</td><td>267</td><td>LanceDB wrapper</td></tr>
+<tr><td>core/document_manager.py</td><td>192</td><td>Doc registry</td></tr>
+<tr><td>core/semantic_chunker.py</td><td>123</td><td>Production chunker</td></tr>
+<tr><td>core/health_monitor.py</td><td>675</td><td>Health check system</td></tr>
+<tr><td>core/docling_parser.py</td><td>91</td><td>Docling parser</td></tr>
+<tr><td>core/llm_client.py</td><td>125</td><td>LLM orchestration</td></tr>
+<tr><td>extraction/extract_with_docid.py</td><td>691</td><td>Main extraction orchestrator</td></tr>
+<tr><td>core/architecture_validator.py</td><td>—</td><td>AST-based enforcement</td></tr>
+<tr><td>core/bootstrap.py</td><td>—</td><td>Startup enforcement</td></tr>
+</table>
+<h4 style="margin-top:16px;">System Metrics</h4>
+<table>
+<tr><th>Metric</th><th>Value</th></tr>
+<tr><td>Documents indexed</td><td>10+ (3–4 unique)</td></tr>
+<tr><td>LanceDB versions</td><td>30 transaction versions</td></tr>
+<tr><td>Total project files</td><td>~20 core + 11 extraction + frontend</td></tr>
+<tr><td>Total codebase</td><td>~3400 lines (core) + 1509 (backend) + frontend</td></tr>
+<tr><td>Chunking strategy</td><td>Header-based Markdown splitter</td></tr>
+<tr><td>Testing</td><td>test_suite.py + 5 script-based tests</td></tr>
+</table>
+</div>
+</div>
+
+<div class="screenshot-grid">
+  <div class="screenshot-card">
+    <img src="images/telemetry-dashboard.png" alt="Core Telemetry Dashboard" class="screenshot-sm">
+    <div class="caption">Core Telemetry Dashboard: 5,419 chunks indexed, 10 active documents, 36 figures extracted, inference latency 0.42ms</div>
+  </div>
+  <div class="screenshot-card">
+    <img src="images/hardware-profile.png" alt="Hardware Profile" class="screenshot-sm">
+    <div class="caption">Hardware &amp; infrastructure profile: ~1.2 GB for embeddings, ~5 GB for VLM, ~500 MB for FastAPI + Next.js</div>
+  </div>
+</div>
+
+<div class="screenshot-card">
+  <img src="images/mermaid-lancedb_schema.png" alt="LanceDB Schema" class="screenshot-sm" style="max-width:700px;display:block;margin:16px auto;">
+  <div class="caption">LanceDB vector store schema: DOCUMENT_CHUNKS with 7 fields (id, text, metadata, embedding, source_doc, page_num, chunk_type) related to SOURCE_DOCS</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 7: CHALLENGES & SOLUTIONS                            -->
+<!-- ============================================================ -->
+<div class="card">
+<h2>7. Challenges &amp; Solutions Implemented</h2>
+
+<table>
+<tr><th>#</th><th>Challenge</th><th>Impact</th><th>Solution Implemented</th><th>Status</th></tr>
+<tr>
+  <td>1</td><td><strong>RTX 5090 GPU Failure</strong><br><small>Server GPU burned (fire incident)</small></td>
+  <td>Major — all GPU-dependent work blocked</td>
+  <td>Warranty claim submitted; A100 OpenStack VM requested (RQF3798846); CPU-only fallback active</td>
+  <td><span class="tag tag-red">Blocked</span></td>
+</tr>
+<tr>
+  <td>2</td><td><strong>NVMe Data Recovery</strong><br><small>Storage device removed separately</small></td>
+  <td>High — potential data loss</td>
+  <td>Recovery status pending</td>
+  <td><span class="tag tag-red">Pending</span></td>
+</tr>
+<tr>
+  <td>3</td><td><strong>LanceDB Count Desync (BUG-001)</strong></td>
+  <td>Medium — incorrect vector counts</td>
+  <td>Replaced ANN search with <code>count_rows(filter=...)</code>; removed destructive reset()+re-ingest</td>
+  <td><span class="tag tag-green">Fixed</span></td>
+</tr>
+<tr>
+  <td>4</td><td><strong>Async Event Loop Blocking (BUG-002)</strong></td>
+  <td>High — server timeout under load</td>
+  <td>10+ sync calls wrapped in <code>asyncio.to_thread()</code>; converted to BackgroundTasks; sync httpx → async</td>
+  <td><span class="tag tag-green">Fixed</span></td>
+</tr>
+<tr>
+  <td>5</td><td><strong>Knowledge Graph Freeze (BUG-003)</strong></td>
+  <td>High — browser crash on dashboard</td>
+  <td>768-dim vector column removed from <code>get_all_vectors()</code>; hard-capped at 300 nodes; added truncated flag</td>
+  <td><span class="tag tag-green">Fixed</span></td>
+</tr>
+<tr>
+  <td>6</td><td><strong>PDF Parsing Noise</strong><br><small>Garbled text from multi-column layouts, scanned docs</small></td>
+  <td>High — reduced retrieval accuracy</td>
+  <td>VLM pipeline (Qwen2-VL-2B) reads pages as images; understand semantic layouts; outputs clean Markdown</td>
+  <td><span class="tag tag-green">Implemented</span></td>
+</tr>
+<tr>
+  <td>7</td><td><strong>Retrieval Precision</strong><br><small>Irrelevant chunks returned for physics queries</small></td>
+  <td>Medium — citation accuracy suffers</td>
+  <td>Cross-Encoder reranking; metadata-aware retrieval; improved topic labels</td>
+  <td><span class="tag tag-green">Implemented</span></td>
+</tr>
+<tr>
+  <td>8</td><td><strong>Hallucination in LLM Answers</strong></td>
+  <td>High — CERN requires traceability</td>
+  <td>Two-stage answer generation (draft → reviewer → final); evidence-grounded prompting with strict citation enforcement</td>
+  <td><span class="tag tag-green">Implemented</span></td>
+</tr>
+<tr>
+  <td>9</td><td><strong>OCR Noise</strong><br><small>"OXTCEN INDI X" → Oxygen Index</small></td>
+  <td>Medium — garbled scanned text</td>
+  <td>Sparse-page recovery with OCR + VLM layout parsing; pytesseract fallback</td>
+  <td><span class="tag tag-green">Implemented</span></td>
+</tr>
+</table>
+
+<div class="screenshot-grid">
+  <div class="screenshot-card">
+    <img src="images/ocr-correction-demo.png" alt="OCR Correction Demo" class="screenshot-sm">
+    <div class="caption">OCR robustness: System normalizes 'OXTCEN INDI X (ISU 4569) : 24.0 %' to Oxygen Index: 24.0% with citations [C1]-[C3]</div>
+  </div>
+  <div class="screenshot-card">
+    <img src="images/document-processing-example.png" alt="Document Processing Example" class="screenshot-sm">
+    <div class="caption">Multi-column legacy CERN document layout with dense text, numbered sections, and complex formatting</div>
+  </div>
+</div>
+
+<h4 style="margin-top:24px;">Challenges 10–13: Strategic &amp; Architectural</h4>
+<table>
+<tr><th>#</th><th>Challenge</th><th>Impact</th><th>Solution Implemented</th><th>Status</th></tr>
+<tr>
+  <td>10</td><td><strong>Cloud Provider Rate Limits</strong><br><small>OpenRouter 429, Groq limits</small></td>
+  <td>Medium — system unavailable</td>
+  <td>Configurable cloud providers with automatic Ollama local fallback</td>
+  <td><span class="tag tag-green">Implemented</span></td>
+</tr>
+<tr>
+  <td>11</td><td><strong>Chunk Quality Inconsistency</strong><br><small>Oversized/fragmented chunks</small></td>
+  <td>Medium — retrieval quality varied</td>
+  <td>Migrated from LLM-based "agentic" chunker → deterministic Markdown header-based <code>SemanticChunker</code></td>
+  <td><span class="tag tag-green">Implemented</span></td>
+</tr>
+<tr>
+  <td>12</td><td><strong>OTELLO Proposal Failure</strong><br><small>EP R&D budget cuts</small></td>
+  <td>Strategic — funding uncertainty</td>
+  <td>Focused internal project scope under Nicola's supervision</td>
+  <td><span class="tag tag-yellow">Mitigated</span></td>
+</tr>
+<tr>
+  <td>13</td><td><strong>Local vs Cloud Vector Mixing</strong><br><small>Nicola's concern</small></td>
+  <td>Architecture — purity constraint</td>
+  <td>Fully local-first architecture; no mixing of retrieval vectors (Nicola's requirement)</td>
+  <td><span class="tag tag-green">Implemented</span></td>
+</tr>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 8: DISCUSSIONS WITH NICOLA                           -->
+<!-- ============================================================ -->
+<div class="card">
+<h2>8. Key Discussions with Nicola Pacifico (Supervisor)</h2>
+
+<div class="grid-2">
+<div>
+<h4>Architecture Decisions (Nicola-Approved)</h4>
+<table>
+<tr><th>Decision</th><th>Date</th><th>Outcome</th></tr>
+<tr><td>Local-only RAG</td><td>Ongoing</td><td>ADR-001 — No cloud dependency for core functions</td></tr>
+<tr><td>Docling evaluation</td><td>Jun 2026</td><td>ADR-002 — Benchmark first, migrate later</td></tr>
+<tr><td>ColPali study</td><td>Jun 2026</td><td>ADR-003 — Selective activation only</td></tr>
+<tr><td>Full local LLM</td><td>Jun 2026</td><td>No vendor lock-in</td></tr>
+<tr><td>Pre-ingested dataset</td><td>Jun 2026</td><td>Nicola-controlled curation</td></tr>
+</table>
+
+<h4 style="margin-top:20px;">Nicola's Core Requirements (from Pages doc)</h4>
+<ul style="padding-left:20px;">
+  <li>Fully local-first deployment</li>
+  <li>No cloud dependency for core functions</li>
+  <li>Reproducible pipeline</li>
+  <li>Pre-ingested dataset (no user uploads)</li>
+  <li>10–15 expert users</li>
+  <li>~1000 scientific pages corpus</li>
+</ul>
+</div>
+<div>
+<h4>Interaction Timeline</h4>
+<div class="timeline" style="padding-left:25px;">
+  <div class="timeline-item">
+    <div class="timeline-date">30 May 2026</div>
+    <div><strong>SSH Server Issue</strong> — Advised to text Nicola immediately about connectivity failure</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-date">16 Jun 2026</div>
+    <div><strong>GPU Research Task</strong> — Nicola informed Vinay about RTX 5090 failure and asked to research CERN GPU resources. Consolidated response drafted with A100 recommendation.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-date">18 Jun 2026</div>
+    <div><strong>SSH Troubleshooting</strong> — Asked Nicola to test SSH from his side for server diagnosis</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-date">4 Jun 2026</div>
+    <div><strong>DRD8 Meeting</strong> — Nicola selected slides from Vinay's detailed presentation and presented at the collaboration meeting. Co-authored 22-slide deck.</div>
+  </div>
+</div>
+
+<h4 style="margin-top:20px;">Key Message from Pages Doc (Nicola Alignment)</h4>
+<p style="background:#f8f9fa;padding:12px;border-radius:8px;font-style:italic;">
+  "The system is not evolving away from Nicola's design — it is converging toward a stable production implementation of his constraints."
+</p>
+
+<h4 style="margin-top:16px;">Approval Status</h4>
+<table>
+<tr><th>Item</th><th>Status</th></tr>
+<tr><td>Local-first architecture</td><td><span class="tag tag-green">Approved</span></td></tr>
+<tr><td>Docling integration path</td><td><span class="tag tag-green">Approved</span> (ADR-002)</td></tr>
+<tr><td>GPU request (A100 OpenStack)</td><td><span class="tag tag-yellow">Under Review</span> (RQF3798846)</td></tr>
+<tr><td>ColPali selective activation</td><td><span class="tag tag-green">Approved</span> (ADR-003)</td></tr>
+<tr><td>Production deployment</td><td><span class="tag tag-yellow">Pending evaluation framework</span></td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 9: PRESENTATIONS & DEMOS                             -->
+<!-- ============================================================ -->
+<div class="card">
+<h2>9. Presentations &amp; Demos</h2>
+
+<table>
+<tr><th>Date</th><th>Title</th><th>Slides</th><th>Audience</th><th>Role</th></tr>
+<tr>
+  <td>Jun 2025</td>
+  <td>DRD8 WP2 Workshop</td>
+  <td>10</td>
+  <td>WP2 Workshop</td>
+  <td>Nicola + Souvik (co-authors)</td>
+</tr>
+<tr>
+  <td>29 Jan 2026</td>
+  <td>Update on Database Management</td>
+  <td>13</td>
+  <td>WP2 Internal</td>
+  <td>Nicola Pacifico</td>
+</tr>
+<tr>
+  <td>25 Feb 2026</td>
+  <td>AI-Assisted Knowledge Structuring (Phase II)</td>
+  <td>14</td>
+  <td>DRD8 3rd Collab Meeting</td>
+  <td>Vinay Kumar (presenter)</td>
+</tr>
+<tr>
+  <td>31 May 2026</td>
+  <td>Agent Zero Engineering Roadmap</td>
+  <td>—</td>
+  <td>Internal (PPTX + PDF + MP4)</td>
+  <td>Vinay Kumar</td>
+</tr>
+<tr style="background:#fff3cd;">
+  <td><strong>4 Jun 2026</strong></td>
+  <td><strong>AI-Assisted Knowledge Structuring for Radiation-Damage Materials</strong></td>
+  <td><strong>22</strong></td>
+  <td><strong>DRD8 4th Collab Meeting</strong></td>
+  <td><strong>Nicola selected slides from Vinay's 25-slide deck; co-presented</strong></td>
+</tr>
+<tr>
+  <td>Jun 2026</td>
+  <td>Multimodal Scientific RAG</td>
+  <td>—</td>
+  <td>Internal (PPTX + PDF)</td>
+  <td>Vinay Kumar</td>
+</tr>
+</table>
+
+<h3 style="margin-top:24px;">9.1 Demo: Real Query Results (from DRD8 Presentation)</h3>
+<table>
+<tr><th>Query</th><th>System Behavior</th><th>Key Achievement</th></tr>
+<tr>
+  <td>"Material No. 557 cable-insulating EEA copolymer — extract additional test properties"</td>
+  <td>Retrieved from noisy scanned tables; cross-referenced across multiple pages</td>
+  <td>Verified response with [C1]–[C3] citations</td>
+</tr>
+<tr>
+  <td>"What is the radiation tolerance of Material X under 5.0 MGy dose?"</td>
+  <td>Multi-document reasoning across CERN Yellow Reports</td>
+  <td>Cross-document inference with page-level citations</td>
+</tr>
+<tr>
+  <td>OCR correction: "OXTCEN INDI X"</td>
+  <td>VLM layout parsing recovered correct text "Oxygen Index"</td>
+  <td>OCR robustness demonstrated</td>
+</tr>
+<tr>
+  <td>"Teflon spacer radiation reasoning"</td>
+  <td>Cross-document material property inference</td>
+  <td>Multi-document reasoning capability</td>
+</tr>
+</table>
+
+<div class="screenshot-grid">
+  <div class="screenshot-card">
+    <img src="images/mermaid-pipeline.png" alt="Three-Phase Pipeline" class="screenshot-sm">
+    <div class="caption">AI-generated: Three-phase pipeline — Research Agent &rarr; Verification Agent &rarr; Synthesis Agent with CDS API fallback</div>
+  </div>
+  <div class="screenshot-card">
+    <img src="images/mermaid-cds_flow.png" alt="CDS Integration Flow" class="screenshot-sm">
+    <div class="caption">AI-generated: CDS integration flow — parallel search of local DB + CERN Document Server, results merged and reranked</div>
+  </div>
+</div>
+
+<div class="screenshot-grid">
+  <div class="screenshot-card">
+    <img src="images/neuro-map-visualization.png" alt="Neuro-Map Visualization" class="screenshot-sm">
+    <div class="caption">Neuro-Map: Force-directed graph visualization showing vector clusters, semantic relationships, and document chunk groupings</div>
+  </div>
+  <div class="screenshot-card">
+    <img src="images/source-verification.png" alt="Source Verification" class="screenshot-sm">
+    <div class="caption">Source document verification interface — researchers can view the exact source page where data was extracted</div>
+  </div>
+</div>
+
+<div class="screenshot-grid">
+  <div class="screenshot-card">
+    <img src="images/focusing-only-query.png" alt="Focused Query" class="screenshot-sm">
+    <div class="caption">Focused query mode: precise retrieval with citation-grounded answers for targeted scientific queries</div>
+  </div>
+  <div class="screenshot-card">
+    <img src="images/long-query-result.png" alt="Long Query Result" class="screenshot-sm">
+    <div class="caption">Long query handling: detailed multi-page extraction with cross-document references</div>
+  </div>
+</div>
+
+<h3 style="margin-top:24px;">9.2 Presentation Files Inventory</h3>
+<table>
+<tr><th>File</th><th>Size</th><th>Description</th></tr>
+<tr><td><code>20260604_DatabaseDevelopment.pdf</code></td><td>1.9 MB</td><td>22-slide DRD8 4th Collab Meeting (latest, with Nicola)</td></tr>
+<tr><td><code>AI-Assisted-Knowledge-StructuringPPT.pptx</code></td><td>48.8 MB</td><td>25-slide detailed deck (Vinay's original)</td></tr>
+<tr><td><code>AIAssisted-Knowledge-Structuring-for-RadiationDamage-Materials (1).pdf</code></td><td>2.0 MB</td><td>14-slide Feb 2026 prototype presentation</td></tr>
+<tr><td><code>20260129_Update_on_database_management.pdf</code></td><td>0.8 MB</td><td>13-slide Nicola Pacifico update</td></tr>
+<tr><td><code>Agent_Zero_Engineering_Roadmap.pptx</code></td><td>17.7 MB</td><td>Engineering roadmap presentation</td></tr>
+<tr><td><code>Multimodal_Scientific_RAG.pptx</code></td><td>4.5 MB</td><td>Multimodal scientific RAG overview</td></tr>
+<tr><td><code>DRD8Workshop-WP2.2.pptx</code></td><td>—</td><td>10-slide original workshop (Nicola + Souvik, Jun 2025)</td></tr>
+<tr><td><code>CERN_Multimodal_RAG.mp4</code></td><td>26.1 MB</td><td>Live system demo video</td></tr>
+<tr><td><code>CERN_DRD8__Legacy_Data.mp4</code></td><td>36.9 MB</td><td>Legacy data problem video</td></tr>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 10: FUTURE ROADMAP                                  -->
+<!-- ============================================================ -->
+<div class="card">
+<h2>10. Future Roadmap</h2>
+
+<div class="chart-bar">
+  <div class="segment" style="width:40%;background:#27ae60;">Phases A–G (Complete)</div>
+  <div class="segment" style="width:10%;background:#f39c12;">TASK-0004</div>
+  <div class="segment" style="width:10%;background:#95a5a6;">TASK-0005</div>
+  <div class="segment" style="width:10%;background:#95a5a6;">TASK-0007/8</div>
+  <div class="segment" style="width:10%;background:#e74c3c;">GPU Blocker</div>
+  <div class="segment" style="width:20%;background:#3498db;">2027 Beta</div>
+</div>
+
+<div class="screenshot-grid">
+  <div class="screenshot-card">
+    <img src="images/production-roadmap.png" alt="Production Roadmap" class="screenshot-sm">
+    <div class="caption">Production roadmap from the DRD8 presentation: Phase 1 (Stability &amp; Persona), Phase 2 (Ingestion Upgrades), Phase 3 (Multi-Tenant with User Management)</div>
+  </div>
+  <div class="screenshot-card">
+    <img src="images/pipeline-architecture.png" alt="Pipeline Architecture" class="screenshot-sm">
+    <div class="caption">Multi-stage scientific orchestration pipeline: Research Agent &rarr; Verification Agent &rarr; Synthesis Agent with CDS API fallback</div>
+  </div>
+</div>
+
+<div class="grid-3">
+<div>
+<h4>Short-Term (Now–Q3 2026)</h4>
+<ul style="padding-left:20px;">
+  <li><strong>Unblock GPU</strong> — Get A100 OpenStack VM provisioning approved</li>
+  <li>TASK-0004B: Docling adapter implementation</li>
+  <li>TASK-0004C: Shadow mode benchmark execution</li>
+  <li>Evaluation dataset creation</li>
+  <li>Reranking layer production hardening</li>
+</ul>
+</div>
+<div>
+<h4>Medium-Term (Q4 2026–Q1 2027)</h4>
+<ul style="padding-left:20px;">
+  <li>TASK-0005: ColPali visual retrieval integration</li>
+  <li>TASK-0007: Hybrid chunking with BGE + Nomic</li>
+  <li>TASK-0008: DeepSeek reasoning layer</li>
+  <li>Celery + Redis ingestion queue</li>
+  <li>Multi-user production hardening</li>
+</ul>
+</div>
+<div>
+<h4>Long-Term (2027–2028)</h4>
+<ul style="padding-left:20px;">
+  <li><strong>Public beta: 2027</strong> 🎯</li>
+  <li>vLLM/Triton inference server</li>
+  <li>Distributed Qdrant cluster</li>
+  <li>S3 storage for documents</li>
+  <li>TASK-0009: Long-term memory layer</li>
+  <li><strong>Final platform + FCC integration: Jul 2028</strong></li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 11: GPU STRATEGY                                     -->
+<!-- ============================================================ -->
+<div class="card">
+<h2>11. GPU Strategy &amp; Justification</h2>
+
+<div class="grid-2">
+<div>
+<h4>GPU Usage Profile</h4>
+<table>
+<tr><th>Operation</th><th>GPU Required</th><th>Load</th></tr>
+<tr><td>LLM inference</td><td>Yes (primary)</td><td>Low — 10–15 users</td></tr>
+<tr><td>Reranking</td><td>Optional (GPU acceleration)</td><td>Low</td></tr>
+<tr><td>Embedding generation</td><td>Yes (offline batch)</td><td>Batch — offline</td></tr>
+<tr><td>ColPali multimodal</td><td>Yes (selective)</td><td>Per-page, select docs</td></tr>
+<tr><td>Docling extraction</td><td>Optional (CPU capable)</td><td>Offline</td></tr>
+</table>
+</div>
+<div>
+<h4>Key Message for GPU Request (RQF3798846)</h4>
+<p style="background:#f8f9fa;padding:16px;border-radius:8px;">
+  <em>"The GPU resource is required not for large-scale inference load, but for efficient local execution of LLM-based reasoning and reranking within a controlled CERN environment. The system is designed for a small user base (10–15 users) with a curated dataset (~1000 pages), where GPU acceleration ensures low-latency inference, stable batching, and reproducible performance for scientific document analysis."</em>
+</p>
+<h4>Recommended Configuration</h4>
+<ul style="padding-left:20px;">
+  <li><strong>Requested:</strong> A100 OpenStack VM (RQF3798846)</li>
+  <li><strong>Backup:</strong> L40S (good balanced option)</li>
+  <li><strong>Minimum:</strong> A10 (testing only)</li>
+  <li><strong>Key optimization:</strong> vLLM batching + KV cache reuse</li>
+  <li><strong>Reality:</strong> GPU is NOT the bottleneck — retrieval quality is</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 12: SYSTEM DIAGRAM                                   -->
+<!-- ============================================================ -->
+<div class="card">
+<h2>12. Production Deployment Topology (Locked)</h2>
+<div class="mermaid-placeholder">
+                  ┌────────────────────────┐
+                  │   User Interface       │
+                  │ (Chat / API clients)   │
+                  └──────────┬─────────────┘
+                             │
+                             ▼
+                  ┌────────────────────────┐
+                  │  FastAPI Gateway       │
+                  │  (Auth + Routing)      │
+                  └──────────┬─────────────┘
+                             │
+         ┌───────────────────┼───────────────────┐
+         ▼                   ▼                   ▼
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│ Retrieval API│  │ Reasoning API│  │ Metadata API │
+└──────┬────────┘  └──────┬───────┘  └──────┬───────┘
+       ▼                 ▼                 ▼
+┌──────────────────────────────────────────────┐
+│          CORE RAG PIPELINE                    │
+│  (rag_pipeline.py → VectorStoreLance → LLM)  │
+└──────────────────────────────────────────────┘
+        │
+        ▼
+┌──────────────────────────────┐
+│ Vector DB + Document Store   │
+│ (LanceDB → outputs/{doc_id}) │
+└──────────────────────────────┘
+
+SYSTEM ARCHITECTURE RULES:
+- ONE ingestion pipeline: extraction/extract_with_docid.py
+- ONE retrieval pipeline: core/rag_pipeline.py
+- ONE vector access layer: core/vector_store_lance.py
+- NO direct lancedb.connect()
+- NO bypass scripts
+- AST-based architecture validation at startup
+</div>
+
+<div class="screenshot-grid">
+  <div class="screenshot-card">
+    <img src="images/end-to-end-data-flow.png" alt="End-to-End Data Flow" class="screenshot-sm">
+    <div class="caption">End-to-end data flow: PDF ingestion pipeline from PyMuPDF &rarr; VLM fallback &rarr; Markdown extraction &rarr; LanceDB indexing &rarr; Retrieval</div>
+  </div>
+  <div class="screenshot-card">
+    <img src="images/cds-integration.png" alt="CDS Integration" class="screenshot-sm">
+    <div class="caption">CERN Document Server (CDS) integration — automatic external search and one-click import of relevant papers into the local RAG knowledge base</div>
+  </div>
+</div>
+
+<div class="screenshot-grid">
+  <div class="screenshot-card">
+    <img src="images/end-to-end-multimodal.png" alt="End-to-End Multimodal" class="screenshot-sm">
+    <div class="caption">End-to-end multimodal extraction pipeline: PDFs &rarr; text + tables + figures + graphs &rarr; vector store &rarr; multimodal RAG</div>
+  </div>
+  <div class="screenshot-card">
+    <img src="images/mermaid-full_architecture.png" alt="Full System Architecture Diagram" class="screenshot-sm">
+    <div class="caption">AI-generated system architecture: Ingestion &rarr; Storage &rarr; Retrieval &rarr; Generation layers</div>
+  </div>
+  <div class="screenshot-card">
+    <img src="images/data-processing-flowchart.png" alt="Data Processing Flowchart" class="screenshot-sm">
+    <div class="caption">Data processing flowchart: document ingestion, chunking, embedding, and retrieval workflow</div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 13: KEY FILES                                        -->
+<!-- ============================================================ -->
+<div class="card">
+<h2>13. File Inventory &amp; Locations</h2>
+
+<div class="grid-2">
+<div>
+<h4>Mac — Local (cernbox/Maxrad-database)</h4>
+<pre style="font-size:0.8em;background:#f8f9fa;padding:12px;border-radius:8px;overflow-x:auto;">
+Pages Doc:
+  CERN_RAG_Final_Architecture 2.pages  (21,507 chars extracted)
+
+Markdown Docs:
+  implementation_plan.md               — VLM RAG upgrade
+  implementation_planDocling.md         — Docling migration plan
+  project_report.md                     — May 2026 progress
+  rag_methodology_guide.md              — Replication guide
+
+PDF Presentations:
+  20260604_DatabaseDevelopment.pdf      — 22-slide (latest DRD8)
+  20260129_Update_on_database_management.pdf
+  AIAssisted-Knowledge-Structuring...pdf
+  Database Package MaxRad Presentation.pdf
+  AI-Pop-with-Semantic-Search...pdf
+  Ollama PPT 1.pdf
+
+PPTX Presentations:
+  AI-Assisted-Knowledge-StructuringPPT.pptx  — 25 slides
+  AIAssisted-Knowledge-Structuring...pptx    — 14 slides
+  DRD8Workshop-WP2.2.pptx                    — 10 slides
+
+Code Migration:
+  cern-multimodel-rag-lancedb-migration/     — Full codebase
+</pre>
+</div>
+<div>
+<h4>CERN Windows PC (SSH: vvinayku@pcca2063)</h4>
+<pre style="font-size:0.8em;background:#f8f9fa;padding:12px;border-radius:8px;overflow-x:auto;">
+D:\Vinay\LLF\                    — LifeLab VR (Unity) project
+C:\Users\vvinayku\Downloads\     — 136 files, 6.2 GB
+
+Key Downloads:
+  Agent_Zero_Engineering_Roadmap.pptx   — 17.7 MB
+  AI-Assisted-Knowledge-Structuring...  — 48.8 MB (25-slide)
+  CERN_Multimodal_RAG.mp4              — 26.1 MB (demo)
+  CERN_DRD8__Legacy_Data.mp4           — 36.9 MB
+  cern_rag_production_presentation.md  — Production assessment
+
+  Screenshots (images/ — 25 files, 43 MB):
+    neuro-map-visualization.png        — Force-directed graph (899 KB)
+    telemetry-dashboard.png            — System metrics (1.3 MB)
+    end-to-end-data-flow.png           — Full pipeline (11.7 MB)
+    pipeline-architecture.png          — 3-phase pipeline (5.1 MB)
+    production-roadmap.png             — Future roadmap (1.6 MB)
+    ocr-correction-demo.png            — OCR normalization (364 KB)
+    architecture-diagram.png           — System overview (1.4 MB)
+    focusing-only-query.png            — Focused query (2.0 MB)
+    long-query-result.png              — Multi-doc result (1.9 MB)
+    result-with-context.png            — Context view (1.6 MB)
+    source-verification.png            — Citation view (179 KB)
+    cds-integration.png                — CDS API search (3.0 MB)
+    query-interface.png                — Query UI (1.0 MB)
+  Multimodal_Scientific_RAG.pptx       — 4.5 MB
+
+RAG Project Code: NOT on Windows PC
+  — Lives on CERN Linux server
+    (pc-dt-drd8-llm, unreachable from outside VPN)
+  — CERNBOX sync available on Mac
+</pre>
+</div>
+</div>
+
+<div>
+<h4>Obsidian Vault (Master-Knowledge-Vault)</h4>
+<pre style="font-size:0.8em;background:#f8f9fa;padding:12px;border-radius:8px;overflow-x:auto;">
+CERN-DRD8-WP4/
+  rag-system-architecture-issues.md     — 36,741 lines (central doc)
+  docling-capability-gap-analysis.md    — Docling migration analysis
+  multimodal-rag-pipeline.md            — Pipeline architecture
+  cern-rag-prototype-development.md     — Prototype development
+  cern-rag-development-continuation.md  — Dev continuation
+  project-update-revision.md            — Project updates
+  drd8-collaboration-story.md           — Collaboration narrative
+  cern-xr-ai-collaboration.md           — XR + AI discussions
+  cern-ssh-connection-troubleshooting.md
+
+Dashboard/
+  Maxrad-BoardMeeting-Presentation.md   — 10-slide board plan
+  Task-Dashboard.md                      — All tasks tracked
+
+Maxrad/
+  search-query-generation.md            — Query gen notes
+  best-local-llm-models.md              — LLM recommendations
+  software-architecture-design.md       — Architecture design
+</pre>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 14: ARCHITECTURE DECISIONS                           -->
+<!-- ============================================================ -->
+<div class="card">
+<h2>14. Architecture Decision Records</h2>
+<table>
+<tr><th>ID</th><th>Decision</th><th>Rationale</th><th>Approved</th><th>Date</th></tr>
+<tr>
+  <td>ADR-001</td>
+  <td>Local-only RAG architecture</td>
+  <td>Scientific traceability; Nicola requirement; no cloud dependency for core functions</td>
+  <td>Nicola Pacifico</td>
+  <td>15 Jun 2026</td>
+</tr>
+<tr>
+  <td>ADR-002</td>
+  <td>Docling evaluation before migration</td>
+  <td>Benchmark first, migrate later. Docling already integrated as primary path; capability gap analysis completed</td>
+  <td>Nicola Pacifico</td>
+  <td>15 Jun 2026</td>
+</tr>
+<tr>
+  <td>ADR-003</td>
+  <td>ColPali selective activation only</td>
+  <td>AVOID full multimodal pipeline cost; activate only for documents with visual content</td>
+  <td>Nicola Pacifico</td>
+  <td>15 Jun 2026</td>
+</tr>
+<tr>
+  <td>ADR-004</td>
+  <td>Metadata.json as canonical contract</td>
+  <td>Retrieval stability guarantee; Docling output not a contract</td>
+  <td>Architecture Freeze</td>
+  <td>Jun 2026</td>
+</tr>
+<tr>
+  <td>ADR-005</td>
+  <td>AST-based architecture enforcement</td>
+  <td>Prevent bypass scripts; ensure canonical pipeline usage</td>
+  <td>System Lock Phase</td>
+  <td>Jun 2026</td>
+</tr>
+<tr>
+  <td>ADR-006</td>
+  <td>GPU for inference only, not retrieval</td>
+  <td>Bottleneck = retrieval quality, not compute. GPU for efficient LLM execution only</td>
+  <td>Architecture Freeze</td>
+  <td>Jun 2026</td>
+</tr>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 15: CRITICAL INSIGHTS                                -->
+<!-- ============================================================ -->
+<div class="card">
+<h2>15. Critical Insights &amp; Lessons Learned</h2>
+
+<div class="grid-2">
+<div>
+<h4>Architecture Evolution Pattern</h4>
+<ol style="padding-left:20px;">
+  <li><strong>Simple RAG →</strong> basic prototype (Nov 2025)</li>
+  <li><strong>→ Multimodal + extraction pipeline</strong> (Feb 2026)</li>
+  <li><strong>→ Canonical locked system</strong> with AST enforcement (May-Jun 2026)</li>
+  <li><strong>→ Nicola-aligned production architecture</strong> (Jun 2026)</li>
+  <li><strong>→ Future: ColPali + DeepSeek + distributed</strong> (2027)</li>
+</ol>
+
+<h4 style="margin-top:16px;">Key Architectural Insights</h4>
+<ul style="padding-left:20px;">
+  <li>The system is at a <strong>"rare architectural maturity level"</strong> — no longer doing RAG engineering, but building a self-validating multimodal extraction–retrieval boundary system</li>
+  <li>TASK-0004 is the <strong>last safe checkpoint before structural evolution</strong> (ColPali + DeepSeek layer)</li>
+  <li>Docling is <strong>present but architecturally inactive</strong> — not missing functionality, but duplicating existing pipeline</li>
+  <li><strong>Two overlapping architectural truths</strong> identified between governance-focused and implementation-grounded views — resolved by dual contract model</li>
+</ul>
+</div>
+<div>
+<h4>Key Risks</h4>
+<table>
+<tr><th>Risk</th><th>Severity</th><th>Status</th></tr>
+<tr><td>GPU dependency for next phases</td><td><span class="tag tag-red">Critical</span></td><td>A100 RQF submitted</td></tr>
+<tr><td>NVMe data loss</td><td><span class="tag tag-red">Critical</span></td><td>Recovery pending</td></tr>
+<tr><td>Schema drift during Docling migration</td><td><span class="tag tag-yellow">High</span></td><td>Adapter layer + contract</td></tr>
+<tr><td>Retrieval regression after migration</td><td><span class="tag tag-red">Critical</span></td><td>Benchmark gate</td></tr>
+<tr><td>No formal evaluation framework yet</td><td><span class="tag tag-yellow">High</span></td><td>Needs implementation</td></tr>
+<tr><td>No distributed architecture (single server)</td><td><span class="tag tag-yellow">Medium</span></td><td>Acceptable for 10–15 users</td></tr>
+<tr><td>30 LanceDB versions — no compaction</td><td><span class="tag tag-yellow">Medium</span></td><td>Performance impact pending</td></tr>
+</table>
+
+<h4 style="margin-top:16px;">Success Factors</h4>
+<ul style="padding-left:20px;">
+  <li>100% local-first — no cloud dependency</li>
+  <li>Proof of principle validated at DRD8 meeting</li>
+  <li>Document extraction works across PDF types (scanned, digital, mixed)</li>
+  <li>3-phase AI pipeline with safety review prevents hallucination</li>
+  <li>Citation system provides page-level traceability</li>
+  <li>Architecture is migration-safe, model-agnostic, extraction-pluggable</li>
+  <li>Zero architecture violations in validated system</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 16: APPENDIX - PRESENTATION SLIDE MAP                -->
+<!-- ============================================================ -->
+<div class="card">
+<h2>16. Appendix: Slide-by-Slide Structure for Board Meeting</h2>
+<table>
+<tr><th>Slide</th><th>Title</th><th>Content</th><th>Duration</th></tr>
+<tr><td>1</td><td>Title</td><td>Maxrad: AI-Assisted Knowledge Platform for Radiation-Damage Materials</td><td>10s</td></tr>
+<tr><td>2</td><td>The Problem</td><td>Decades of data locked in PDFs; manual search takes hours-to-days</td><td>30s</td></tr>
+<tr><td>3</td><td>What We Built</td><td>Document ingestion, vector search, 3-phase pipeline, multimodal, CDS integration</td><td>30s</td></tr>
+<tr><td>4</td><td>System Architecture</td><td>Visual pipeline: PDF → Extraction → LanceDB → AI Pipeline → Citation Answers</td><td>30s</td></tr>
+<tr><td>5</td><td>Key Milestones</td><td>Jun 2025 → Feb 2026 → Jun 2026 (PoP complete) → 2027 beta</td><td>20s</td></tr>
+<tr><td>6</td><td>Technical Challenges Solved</td><td>OCR noise, retrieval accuracy, hallucination, graph extraction, multi-column</td><td>30s</td></tr>
+<tr><td>7</td><td>Demo: Real Query Results</td><td>Material 557, Teflon spacer, OCR correction — with screenshot</td><td>45s</td></tr>
+<tr><td>8</td><td>System Metrics</td><td>Documents: 10+, Chunks: 5,419, Latency: 0.42ms, VRAM: 1.2–5 GB</td><td>15s</td></tr>
+<tr><td>9</td><td>Roadmap</td><td>4 phases: Stability → Ingestion → Scale → Production (public beta 2027)</td><td>20s</td></tr>
+<tr><td>10</td><td>Closing</td><td>"Decades of knowledge, locked in PDFs, now accessible in seconds."</td><td>10s</td></tr>
+</table>
+<p style="margin-top:12px;"><strong>Total:</strong> ~4 minutes presentation time</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- FOOTER                                                        -->
+<!-- ============================================================ -->
+<div style="text-align:center;padding:40px 0 20px;color:#888;font-size:0.85em;">
+  <p>Generated: July 2026 &bull; Sources: CERNBOX, Obsidian Vault, CERN PC, Pages Doc, ChatGPT Export</p>
+  <p>Vinay Kumar &bull; CERN DRD8 WP2.2 &bull; Supervisor: Nicola Pacifico</p>
+</div>
+
+</div>
+</body>
+</html>
