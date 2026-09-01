@@ -1,0 +1,49 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# macOS and editor noise
+.DS_Store
+.idea/
+.vscode/
+.obsidian/
+frontend/node_modules/
+node_modules/
+
+# Python environments and caches
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Runtime and generated data
+lancedb/
+workspace/
+outputs/
+logs/
+*.log
+*.sqlite
+*.db
+*.sqlite3
+*.duckdb
+
+# Local model and extraction caches
+models/
+model_cache/
+huggingface_cache/
+.cache/
+
+# Large archive backup already retained on CERNBox
+thesis-preparation/WP2_Thesis_Vault-nested-backup-*.tar.gz
+thesis-preparation/
+WP2_Thesis_Vault/07-Chat-History/
+WP2_Thesis_Vault/10-Draft-Documents/
+
+# Temporary exports
+*.tmp
+*.swp
